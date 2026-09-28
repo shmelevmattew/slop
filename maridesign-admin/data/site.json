@@ -9,6 +9,7 @@
     "en": "UI/UX and product designer with 4+ years of experience in B2B product design, digitalising business processes, document flow and industrial analytics."
   },
   "avatar": "/static/avatar.jpg",
+  "metricaId": "113119775",
   "nav": [
     { "id": "projects", "href": "/", "label": { "ru": "Проекты", "en": "Projects" } },
     { "id": "other", "href": "/other", "label": { "ru": "Разное", "en": "Other" } },
