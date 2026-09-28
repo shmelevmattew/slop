@@ -291,7 +291,7 @@ function handlePublic(req, res, url, locale) {
         locale: effectiveLocale,
         allCases: all,
         draft: includeDrafts && !entry.published,
-        adminLink: `http://localhost:${PORT}/#cases`,
+        adminLink: ADMIN_BASE,
       }),
       { 'Content-Type': 'text/html; charset=utf-8' }
     );
@@ -459,9 +459,12 @@ const server = http.createServer(async (req, res) => {
 function start() {
   const site = readJson(SITE_FILE, {});
   PORT = Number(process.env.PORT || site.port || 4500);
-  server.listen(PORT, '127.0.0.1', () => {
+  // A PaaS (Timeweb Cloud App Platform and friends) needs the app on 0.0.0.0;
+  // behind a local reverse proxy 127.0.0.1 is the safer default.
+  const HOST = process.env.HOST || '127.0.0.1';
+  server.listen(PORT, HOST, () => {
     console.log('');
-    console.log('  Админ-панель:  http://localhost:' + PORT + ADMIN_BASE);
+    console.log('  Админ-панель:  http://' + HOST + ':' + PORT + ADMIN_BASE);
     console.log('  Сайт:          http://localhost:' + PORT + '/');
     console.log('  Данные:        ' + path.join(ROOT, 'data'));
     console.log('');
