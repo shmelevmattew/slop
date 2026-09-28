@@ -1,0 +1,45 @@
+{
+  "id": "829b251ea73d",
+  "slug": "document-system-mobile-app",
+  "published": true,
+  "order": 1789552821231,
+  "createdAt": "2026-09-16T10:00:21.231Z",
+  "updatedAt": "2026-09-16T10:00:21.231Z",
+  "title": {
+    "ru": "Внедрение СЭД в корпоративное мобильное приложение для 47000+ сотрудников",
+    "en": ""
+  },
+  "company": "MMK",
+  "year": "2026",
+  "summary": {
+    "ru": "Мобильный СЭД для 47 000+ сотрудников",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/MT8Kiw1QrqY4JzDOlBYW3gWLdg.png",
+    "en": null
+  },
+  "role": {
+    "ru": "Продуктовый дизайнер",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "2 месяца",
+    "en": ""
+  },
+  "team": {
+    "ru": "Я, аналитики, разработчики",
+    "en": ""
+  },
+  "platform": {
+    "ru": "Мобильное приложение",
+    "en": ""
+  },
+  "sections": [],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

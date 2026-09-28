@@ -1,0 +1,68 @@
+{
+  "id": "4786d94dadc6",
+  "slug": "system-control",
+  "published": true,
+  "order": 1789552821226,
+  "createdAt": "2026-09-16T10:00:21.226Z",
+  "updatedAt": "2026-09-28T09:48:03.267Z",
+  "title": {
+    "ru": "Система контроля состояния паллетного парка",
+    "en": ""
+  },
+  "company": "MMK",
+  "year": "2025",
+  "summary": {
+    "ru": "Дизайн системы для промышленного производства",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/6sXh1sxyqRkwiMS1RINZyfx9GWo.png",
+    "en": null
+  },
+  "role": {
+    "ru": "Продуктовый дизайнер",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "3 месяца",
+    "en": ""
+  },
+  "team": {
+    "ru": "Я, разработчики, команда искусственного интеллекта",
+    "en": ""
+  },
+  "platform": {
+    "ru": "Веб-приложение",
+    "en": ""
+  },
+  "sections": [
+    {
+      "id": "e944d4ca69b1",
+      "type": "list",
+      "anchor": "novaya-sektsiya",
+      "title": {
+        "ru": "Новая секция",
+        "en": ""
+      },
+      "body": {
+        "ru": "jufujfj",
+        "en": ""
+      },
+      "image": null,
+      "images": [],
+      "videoUrl": "",
+      "items": [
+        {
+          "ru": "cerfffff",
+          "en": ""
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

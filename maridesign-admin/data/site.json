@@ -1,0 +1,88 @@
+{
+  "port": 4500,
+  "siteTitle": {
+    "ru": "Мария Шиныбекова",
+    "en": "Maria Shinybekova"
+  },
+  "siteDescription": {
+    "ru": "UI/UX и продуктовый дизайнер с 4+ годами опыта проектирования B2B продуктов в области цифровизации бизнес-процессов, документооборота и промышленной аналитики.",
+    "en": "UI/UX and product designer with 4+ years of experience in B2B product design, digitalising business processes, document flow and industrial analytics."
+  },
+  "avatar": "/static/avatar.jpg",
+  "nav": [
+    { "id": "projects", "href": "/", "label": { "ru": "Проекты", "en": "Projects" } },
+    { "id": "other", "href": "/other", "label": { "ru": "Разное", "en": "Other" } },
+    { "id": "resume", "href": "/resume", "label": { "ru": "Резюме", "en": "Resume" } }
+  ],
+  "hero": {
+    "primary": { "ru": "Последняя работа", "en": "Latest work" },
+    "primaryHref": "/case/making-life-easier",
+    "secondary": { "ru": "Обсудить проект", "en": "Discuss a project" },
+    "secondaryHref": "https://t.me/marishinybekova"
+  },
+  "resume": {
+    "title": { "ru": "Резюме", "en": "Resume" },
+    "downloadLabel": { "ru": "Скачать резюме", "en": "Download resume" },
+    "downloadHref": "/static/resume.pdf",
+    "experienceHeading": { "ru": "Опыт работы", "en": "Experience" },
+    "toolsHeading": { "ru": "Инструменты которые я использую в работе", "en": "Tools I work with" },
+    "skillsHeading": { "ru": "Навыки", "en": "Skills" },
+    "educationHeading": { "ru": "Образование", "en": "Education" },
+    "experience": [
+      {
+        "role": { "ru": "Продуктовый дизайнер", "en": "Product designer" },
+        "company": { "ru": "Магнитогорский Металлургический Комбинат", "en": "Magnitogorsk Iron and Steel Works" },
+        "period": { "ru": "Март 2024 - Август 2026", "en": "March 2024 – August 2026" },
+        "description": {
+          "ru": "Проектировала интерфейсы для внутренних и B2B-продуктов компании: корпоративный маркетплейс (система закупок), СЭД «Атач» (веб и мобильная версия), административные и мониторинговые системы, портал для руководства. Занималась полным циклом — от исследований и прототипов до дизайн-систем и передачи в разработку.",
+          "en": ""
+        }
+      },
+      {
+        "role": { "ru": "Веб-дизайнер", "en": "Web designer" },
+        "company": { "ru": "Фриланс", "en": "Freelance" },
+        "period": { "ru": "Январь 2022 – Март 2024", "en": "January 2022 – March 2024" },
+        "description": {
+          "ru": "Работала над проектами для частных и коммерческих заказчиков: разрабатывала сайты, лендинги, интернет-магазины, адаптивные макеты и графические материалы для бизнеса.",
+          "en": ""
+        }
+      }
+    ],
+    "tools": [
+      { "name": { "ru": "Framer", "en": "Framer" }, "note": { "ru": "Веб-дизайн, шаблоны", "en": "Web design, templates" } },
+      { "name": { "ru": "Claude", "en": "Claude" }, "note": { "ru": "Идеи, прототипирование", "en": "Ideas, prototyping" } },
+      { "name": { "ru": "Miro", "en": "Miro" }, "note": { "ru": "Брейншторм, воркшопы", "en": "Brainstorming, workshops" } },
+      { "name": { "ru": "Figma", "en": "Figma" }, "note": { "ru": "UI Дизайн", "en": "UI design" } },
+      { "name": { "ru": "Perplexity", "en": "Perplexity" }, "note": { "ru": "Ресерч", "en": "Research" } },
+      { "name": { "ru": "Craft", "en": "Craft" }, "note": { "ru": "Организация работы", "en": "Work organisation" } }
+    ],
+    "skills": [
+      { "ru": "Продуктовый дизайн", "en": "Product design" },
+      { "ru": "UX ресерч", "en": "UX research" },
+      { "ru": "Интерактивный дизайн", "en": "Interaction design" },
+      { "ru": "Дизайн системы", "en": "Design systems" },
+      { "ru": "Прототипирование", "en": "Prototyping" },
+      { "ru": "User flows", "en": "User flows" },
+      { "ru": "Usability тестирование", "en": "Usability testing" },
+      { "ru": "Визуальный дизайн", "en": "Visual design" },
+      { "ru": "Информационная архитектура", "en": "Information architecture" }
+    ],
+    "education": [
+      {
+        "degree": { "ru": "Бакалавриат · Прикладная информатика", "en": "Bachelor · Applied Informatics" },
+        "place": { "ru": "2022 – 2026 · МГТУ им. Носова", "en": "2022 – 2026 · NMSTU" }
+      }
+    ]
+  },
+  "contact": {
+    "label": { "ru": "Обсудить проект", "en": "Discuss a project" },
+    "href": "https://t.me/marishinybekova"
+  },
+  "contacts": {
+    "heading": { "ru": "Контакты", "en": "Contacts" },
+    "email": "mari.shinybekova@mail.ru",
+    "telegram": "@marishinybekova",
+    "telegramHref": "https://t.me/marishinybekova"
+  },
+  "footerLinksHeading": { "ru": "Ссылки", "en": "Links" }
+}

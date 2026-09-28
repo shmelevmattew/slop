@@ -1,0 +1,1537 @@
+/* ============================================================
+   maridesign — public site styles
+   Colors, fonts and type scale are taken from the exported
+   Framer site so the rebuilt pages stay visually consistent.
+   ============================================================ */
+
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/static/fonts/gyBhhwUxId8gMGYQMKR3pzfaWI_RruMIl5na-1Q.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/static/fonts/5vvr9Vy74if2I6bQbJvbw7SY1pQ.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/static/fonts/DpPBYI0sL4fYLgAkX8KXOPVt7c.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/static/fonts/CIM4KQCLZSMMLWPVH25IDDSTY4ENPHEY.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/static/fonts/JNU3GNMUBPWW6V6JTED3S27XL5HN7NM5.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/static/fonts/6P4FPMFQH7CCC7RZ4UU4NKSGJ2RLF7V5.woff2') format('woff2');
+}
+
+:root {
+  --color-bg: #fcfcfc;
+  --color-surface: #ffffff;
+  --color-text: #04111f;
+  --color-muted: #717880;
+  --color-soft: #5b5f63;
+  --color-border: #e8eaed;
+  --color-subtle: #f0f1f3;
+  --color-accent: #4513eb;
+  --font-display: 'Manrope', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-ui: 'Geist', 'Inter', system-ui, sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --content-width: 1200px;
+  --reading-width: 720px;
+  --space: 24px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---------- header ----------
+   A floating pill pinned to the top of the viewport, matching the exported
+   Framer header: blur(10px) backdrop, translucent fill, 12px radius, centred.
+   40px is the offset Framer uses at desktop widths. */
+
+.site-header {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(218, 218, 230, 0.5);
+}
+
+/* On phones the header and the language pill share one row: the header takes
+   the left part of the bar and the language pill sits at the right end of the
+   same line, so nothing drops below the header. */
+@media (max-width: 809.98px) {
+  .site-header {
+    left: 16px;
+    right: 16px;
+    top: 20px;
+    transform: none;
+    max-width: none;
+  }
+
+  .header-inner {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-right: 0;
+  }
+
+  .site-nav {
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-left: 0;
+  }
+
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Sits inside the header pill on phones, so both share one row. */
+  .lang-switch-float {
+    position: static;
+    top: auto;
+    right: auto;
+    flex: 0 0 auto;
+    margin-right: 4px;
+    padding: 0;
+    border-radius: 8px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: none;
+  }
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+}
+
+/* Thin rule that separates the page navigation from the language switcher, so
+   the two read as distinct controls inside the same pill. */
+.header-divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 20px;
+  margin: 0 6px;
+  background: rgba(4, 17, 31, 0.12);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 4px;
+}
+
+.nav-link {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text);
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-link:hover {
+  background: rgba(252, 252, 252, 0.6);
+}
+
+.nav-link.active {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Case pages swap the pill for a back link plus the section titles, all on one
+   line. Sections scroll horizontally when they do not fit. */
+.header-case {
+  padding: 4px;
+  max-width: calc(100vw - 32px);
+}
+
+.back-link {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text);
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.back-link:hover {
+  background: rgba(252, 252, 252, 0.6);
+}
+
+.case-header-divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 20px;
+  margin: 0 6px;
+  background: rgba(4, 17, 31, 0.12);
+}
+
+.case-section-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  max-width: min(70vw, 900px);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.case-section-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.case-section-link {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text);
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.case-section-link:hover {
+  background: rgba(252, 252, 252, 0.6);
+}
+
+/* The section currently in view turns white, matching the active nav pill on
+   the site pages. */
+.case-section-link.is-current {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ---------- language switcher ----------
+   Lives inside the header pill on every screen size, so the two always share a
+   row. On desktop it is pushed to the right end of the bar; on phones the
+   header bar spans the viewport and the media query above tightens the spacing. */
+
+.lang-switch-float {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lang-option {
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--color-text);
+  transition: background 0.15s ease;
+}
+
+.lang-option:hover {
+  background: rgba(252, 252, 252, 0.6);
+}
+
+.lang-option.lang-active {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.lang-option .lang-full {
+  display: none;
+}
+
+.lang-missing {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- hero ----------
+   Blocks below the header: portrait, name, description and the two buttons.
+   Gap 20px between text and buttons, 12px inside the heading block, matching
+   the Framer hero stack. */
+
+.framer-hero {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+  padding: 164px 0 60px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Animated pastel wash behind the header and the name block. It is a radial
+   gradient centred in the top-right, to the right of the content column, so the
+   area under the avatar and name stays clean. It fades out towards the bottom
+   and the left, leaving the rest of the page white. The layer spans the full
+   viewport width rather than the 1280px column. */
+.framer-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: radial-gradient(
+    110% 110% at 90% -14%,
+    rgba(196, 181, 253, 0.95) 0%,
+    rgba(186, 200, 255, 0.82) 20%,
+    rgba(186, 214, 255, 0.52) 36%,
+    rgba(203, 226, 255, 0.24) 52%,
+    rgba(224, 238, 255, 0.08) 66%,
+    rgba(252, 252, 252, 0) 80%
+  );
+  animation: hero-breathe 14s ease-in-out infinite;
+}
+
+/* Slow pulse: the wash swells and settles, drifting slightly between the blue
+   and the violet end without ever moving the layout. */
+@keyframes hero-breathe {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06) translate3d(-1.5%, 1%, 0);
+  }
+}
+
+/* Respect a reduced-motion preference: keep the colour, drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .framer-hero::before {
+    animation: none;
+  }
+}
+
+.hero-inner {
+  padding: 0 64px;
+  display: flex;
+  flex-flow: column;
+  gap: 32px;
+}
+
+.hero-text {
+  display: flex;
+  flex-flow: column;
+  gap: 12px;
+}
+
+.hero-avatar {
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.hero-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: inherit;
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.hero-description {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--color-muted);
+  max-width: 550px;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.hero-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.hero-button-primary {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.hero-button-primary:hover {
+  opacity: 0.88;
+}
+
+.hero-button-secondary {
+  background: var(--color-subtle);
+  color: var(--color-text);
+}
+
+.hero-button-secondary:hover {
+  background: #e6e8eb;
+}
+
+/* Shown while the resume PDF has not been uploaded yet: same shape, no action. */
+.hero-button.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- layout ---------- */
+
+.page {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 48px var(--space) 96px;
+}
+
+.page-narrow {
+  max-width: var(--reading-width);
+}
+
+/* ---------- home / project grid ----------
+   Metrics below are lifted from the exported Framer stylesheet so the rebuilt
+   page matches the original layout without importing the obfuscated runtime:
+   section max-width 1280px, 64px side padding, 80px block gap, a two-column
+   grid with a 24px gap, 4:3 media and an 8px radius. */
+
+.framer-page {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+  background: var(--color-bg);
+}
+
+/* All content blocks share one centred column: 1280px wide with 64px of inner
+   padding, so the visible content is 1152px and the gutters stay equal on any
+   window width. `margin: 0 auto` centres them without relying on the parent. */
+.framer-projects,
+.hero-inner,
+.other-projects-inner,
+.footer-inner,
+.case-hero,
+.case-cover,
+.case-body-wrap {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.projects-section-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.framer-projects {
+  display: flex;
+  flex-flow: column;
+  gap: 80px;
+  padding: 0 64px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(50px, 1fr));
+  grid-auto-rows: min-content;
+  justify-content: start;
+  gap: 24px;
+  width: 100%;
+}
+
+/* ---------- resume ----------
+   Structured blocks under the shared hero. Each block is a heading plus its
+   list, on the same 1280px column as the rest of the site. */
+
+.resume-block {
+  display: flex;
+  flex-flow: column;
+  gap: 24px;
+}
+
+.resume-block-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resume-jobs {
+  display: flex;
+  flex-flow: column;
+  gap: 40px;
+}
+
+.resume-job {
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+}
+
+.resume-job-head {
+  display: flex;
+  flex-flow: column;
+  gap: 4px;
+}
+
+.resume-job-role {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.resume-job-company {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--color-soft);
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.resume-at {
+  color: var(--color-muted);
+}
+
+.resume-job-period {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.resume-job-text {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-muted);
+  max-width: 820px;
+  margin: 0;
+}
+
+.resume-tools {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(50px, 1fr));
+  gap: 24px 32px;
+}
+
+.resume-tool {
+  display: flex;
+  flex-flow: column;
+  gap: 4px;
+}
+
+.resume-tool-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.35;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.resume-tool-note {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.resume-skills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-flow: column;
+  gap: 0;
+}
+
+.resume-skill {
+  position: relative;
+  padding: 12px 0 12px 24px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-soft);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resume-skill::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-text);
+}
+
+.resume-education {
+  display: flex;
+  flex-flow: column;
+  gap: 4px;
+}
+
+.resume-education-degree {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.resume-education-place {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* ---------- gallery page ("Разное") ----------
+   Same two-column rhythm as the project grid, but each card carries a heading
+   and an optional caption under the image. */
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(50px, 1fr));
+  grid-auto-rows: min-content;
+  justify-content: start;
+  gap: 40px 24px;
+  width: 100%;
+}
+
+.gallery-heading {
+  display: flex;
+  flex-flow: column;
+  gap: 8px;
+}
+
+.gallery-heading-intro {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--color-muted);
+  max-width: 550px;
+  margin: 0;
+}
+
+.gallery-card {
+  display: flex;
+  flex-flow: column;
+  gap: 12px;
+  margin: 0;
+  width: 100%;
+}
+
+.gallery-card-caption {
+  display: flex;
+  flex-flow: column;
+  gap: 6px;
+}
+
+.gallery-card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.gallery-card-body {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* Three-up grid for the "other projects" strip at the end of a case. */
+.projects-grid-three {
+  grid-template-columns: repeat(3, minmax(50px, 1fr));
+}
+
+/* ---------- other projects (bottom of a case) ---------- */
+
+.other-projects {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+  padding: 80px 0 0;
+}
+
+.other-projects-inner {
+  padding: 0 64px;
+  display: flex;
+  flex-flow: column;
+  gap: 32px;
+}
+
+.framer-projects {
+  display: flex;
+  flex-flow: column;
+  gap: 80px;
+  padding: 0 64px;
+}
+
+/* The hero already ends with 60px of padding, so the grid follows right after
+   the buttons without a heading of its own. */
+.framer-page > .framer-projects:first-of-type {
+  padding-top: 0;
+}
+
+/* ---------- footer ----------
+   Three columns: brand block, contacts, page links. Matches the Framer footer
+   structure, with a divider above. */
+
+.site-footer {
+  width: 100%;
+  margin-top: 96px;
+  padding: 48px 0 64px;
+  border-top: 1px solid var(--color-border);
+}
+
+.footer-inner {
+  width: 100%;
+  padding: 0 64px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.footer-brand {
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+}
+
+.footer-brand-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-avatar {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.footer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: inherit;
+}
+
+.footer-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.footer-description {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-muted);
+  max-width: 460px;
+  margin: 0;
+}
+
+.footer-copyright {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.footer-column {
+  display: flex;
+  flex-flow: column;
+  gap: 12px;
+}
+
+.footer-column-heading {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.footer-links {
+  display: flex;
+  flex-flow: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.footer-link,
+.footer-contact {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-soft);
+  transition: color 0.15s ease;
+}
+
+.footer-link:hover,
+.footer-contact:hover {
+  color: var(--color-text);
+}
+
+/* Contacts copy to the clipboard on click. The label swaps to a confirmation
+   that fades in, then everything settles back to the address. */
+.footer-contact {
+  position: relative;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-soft);
+  transition: color 0.15s ease;
+}
+
+.footer-contact-text {
+  display: inline-block;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* The confirmation rides on top of the address, so the row keeps its width and
+   nothing reflows while the label changes. */
+.footer-contact::after {
+  content: attr(data-copy-label);
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  color: var(--color-text);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+
+.footer-contact.is-copied .footer-contact-text {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.footer-contact.is-copied::after {
+  animation: copy-pop 1.6s ease forwards;
+}
+
+.footer-contact.is-copy-failed::after {
+  content: 'Ошибка';
+  color: #b42318;
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes copy-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  18% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.framer-card {
+  cursor: pointer;
+  display: flex;
+  flex-flow: column;
+  place-content: flex-start center;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-shell {
+  display: flex;
+  flex-flow: column;
+  place-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.33333 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-media-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-subtle);
+  border-radius: 8px;
+}
+
+.card-media-img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-media-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: inherit;
+  display: block;
+}
+
+.card-media-empty {
+  display: grid;
+  place-items: center;
+  background: var(--color-subtle);
+  color: var(--color-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+.card-caption {
+  display: flex;
+  flex-flow: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.card-pill {
+  z-index: 2;
+  flex: 1 0 0;
+  display: flex;
+  place-content: center;
+  align-items: center;
+  width: 1px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-pill-text {
+  flex: 1 0 0;
+  width: 1px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--color-text);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.framer-card:hover .card-media-img {
+  transform: scale(1.02);
+  transition: transform 0.4s ease;
+}
+
+/* ---------- case page ---------- */
+
+.case-hero {
+  padding: 148px 64px 0;
+}
+
+.case-overline {
+  display: flex;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 16px;
+}
+
+.case-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.1;
+  margin: 0 0 16px;
+  max-width: 900px;
+}
+
+.case-summary {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.45;
+  max-width: 550px;
+  margin: 0 0 40px;
+}
+
+.case-cover {
+  margin: 40px auto 0;
+  padding: 0 64px;
+}
+
+.case-cover img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.case-body-wrap {
+  padding: 0 64px 96px;
+}
+
+.case-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  margin: 0 0 48px;
+  padding: 28px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.meta-row dt {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 6px;
+}
+
+.meta-row dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+/* ---------- legacy table of contents (kept for static pages) ---------- */
+
+.case-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 24px 0 8px;
+}
+
+.anchor-link {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--color-subtle);
+  color: var(--color-soft);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.anchor-link:hover {
+  background: var(--color-text);
+  color: #fff;
+}
+
+/* ---------- sections ---------- */
+
+.case-body {
+  max-width: 100%;
+  margin: 0;
+  padding: 24px 0 0;
+}
+
+/* Sections sit on the same column as the case title, the meta grid and the
+   footer: full width of the 1280px wrapper, no centring of their own. Inner
+   blocks stay readable through .section-title and .case-section p caps. */
+.case-section {
+  max-width: 100%;
+  margin: 0;
+  padding: 56px 0 0;
+  /* Clears the floating header pill (40px offset + ~52px bar) so a linked
+     section lands just below it instead of underneath. */
+  scroll-margin-top: 108px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
+}
+
+.case-section p {
+  margin: 0 0 18px;
+  color: var(--color-soft);
+  max-width: 820px;
+}
+
+.case-section p:last-child {
+  margin-bottom: 0;
+}
+
+.section-image,
+.section-gallery,
+.section-split,
+.section-video {
+  max-width: none;
+}
+
+/* Split and media sections stay full width; only their heading follows the
+   text cap, the same as paragraphs. */
+.section-image .section-title,
+.section-gallery .section-title,
+.section-split .section-title,
+.section-video .section-title {
+  max-width: 820px;
+}
+
+.figure {
+  margin: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-subtle);
+}
+
+.figure-img {
+  width: 100%;
+  height: auto;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.gallery-item {
+  margin: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--color-subtle);
+}
+
+.gallery-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.gallery-item figcaption {
+  padding: 8px 12px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.split-text-first .split-text {
+  order: 1;
+}
+
+.split-image-first .split-text {
+  order: 2;
+}
+
+.section-quote blockquote {
+  margin: 0;
+  padding: 28px 32px;
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-subtle);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.section-quote blockquote p {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  position: relative;
+  padding: 10px 0 10px 28px;
+  color: var(--color-soft);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.list li::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 20px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.video,
+.video-embed {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #000;
+}
+
+.video-embed {
+  aspect-ratio: 16 / 9;
+}
+
+.video-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---------- draft banner ---------- */
+
+.draft-banner {
+  background: #fff8e6;
+  border-bottom: 1px solid #f0e0b8;
+  color: #7a5c12;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  padding: 10px var(--space);
+  text-align: center;
+}
+
+.draft-banner a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+/* ---------- empty state ---------- */
+
+.empty-state {
+  padding: 64px 0;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .split {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .split-image-first .split-text,
+  .split-text-first .split-text {
+    order: initial;
+  }
+}
+
+@media (max-width: 1279.98px) and (min-width: 810px) {
+  .framer-projects {
+    padding: 0 40px;
+  }
+
+  .hero-inner,
+  .footer-inner,
+  .other-projects-inner {
+    padding: 0 40px;
+  }
+
+  .case-hero,
+  .case-cover,
+  .case-body-wrap {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .hero-name {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 809.98px) {
+  .framer-page {
+    padding-top: 0;
+  }
+
+  .framer-projects {
+    gap: 60px;
+    padding: 0 20px;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(1, minmax(50px, 1fr));
+  }
+
+  .projects-grid-three {
+    grid-template-columns: repeat(1, minmax(50px, 1fr));
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(1, minmax(50px, 1fr));
+    gap: 32px;
+  }
+
+  .resume-tools {
+    grid-template-columns: repeat(2, minmax(50px, 1fr));
+  }
+
+  .resume-block-title {
+    font-size: 24px;
+  }
+
+  .hero-name {
+    font-size: 34px;
+    line-height: 1.2;
+  }
+
+  .framer-hero {
+    padding: 124px 0 40px;
+  }
+
+  .hero-inner,
+  .footer-inner,
+  .other-projects-inner {
+    padding: 0 20px;
+    gap: 28px;
+  }
+
+  .case-hero {
+    padding: 124px 20px 0;
+  }
+
+  .case-cover,
+  .case-body-wrap {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .case-title {
+    font-size: 30px;
+  }
+
+  /* The section bar scrolls sideways on phones instead of wrapping. */
+  .case-section-nav {
+    max-width: 46vw;
+  }
+
+  .case-section-link,
+  .back-link {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .site-header {
+    top: 20px;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* The header pill is nearly full width on phones, so the language pill drops
+     to its own line underneath instead of overlapping it. */
+  .lang-switch-float {
+    top: 84px;
+    right: 16px;
+  }
+
+  .nav-link {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --space: 20px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+}

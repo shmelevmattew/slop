@@ -1,0 +1,45 @@
+{
+  "id": "8db8b490a4c6",
+  "slug": "work-on-document-system",
+  "published": true,
+  "order": 1789552821217,
+  "createdAt": "2026-09-16T10:00:21.217Z",
+  "updatedAt": "2026-09-16T10:00:21.217Z",
+  "title": {
+    "ru": "Работа над экосистемой СЭД",
+    "en": ""
+  },
+  "company": "ММК",
+  "year": "2026",
+  "summary": {
+    "ru": "Редизайн веб-версии и админ-панели",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/od1vPZPScr97AA41MnYIt61aows.png",
+    "en": null
+  },
+  "role": {
+    "ru": "Продуктовый дизайнер",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "2024-2026",
+    "en": ""
+  },
+  "team": {
+    "ru": "Аналитики, Разработчики",
+    "en": ""
+  },
+  "platform": {
+    "ru": "Веб, мобилка",
+    "en": ""
+  },
+  "sections": [],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

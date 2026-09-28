@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Админ-панель — кейсы</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="stylesheet" href="__ADMIN_BASE__/admin.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand">Админ-панель <span>— maridesign</span></div>
+  <div class="topbar-tabs">
+    <button class="topbar-tab active" data-tab="cases">Кейсы</button>
+    <button class="topbar-tab" data-tab="other">Разное</button>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-sm" id="btn-view-site">Открыть сайт</button>
+    <button class="btn btn-sm" id="btn-view-case" disabled>Просмотр кейса</button>
+    <button class="btn btn-sm btn-primary" id="btn-new">Новый кейс</button>
+    <a class="btn btn-sm" href="__ADMIN_BASE__/logout">Выйти</a>
+  </div>
+</div>
+
+<div class="layout" id="layout-cases">
+  <aside class="sidebar">
+    <p class="sidebar-title">Все кейсы</p>
+    <div id="case-list"></div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="empty">Выберите кейс слева или создайте новый.</div>
+  </main>
+</div>
+
+<div class="layout hidden" id="layout-other">
+  <main class="main" id="main-other"></main>
+</div>
+
+<div class="status" id="status"></div>
+<div id="modal-root"></div>
+
+<script type="module" src="__ADMIN_BASE__/app.js"></script>
+</body>
+</html>

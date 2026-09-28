@@ -1,0 +1,64 @@
+{
+  "other": {
+    "slug": "other",
+    "title": {
+      "ru": "Разное",
+      "en": ""
+    },
+    "intro": {
+      "ru": "",
+      "en": ""
+    },
+    "updatedAt": "2026-09-28T09:18:30.865Z",
+    "items": [
+      {
+        "id": "4409d81ebc9f",
+        "title": {
+          "ru": "Новый раздел",
+          "en": ""
+        },
+        "body": {
+          "ru": "",
+          "en": ""
+        },
+        "image": "/uploads/1790587096666-9vr4d1-753e1f57-a560-4159-8fe2-d5a91aee592d.jpg"
+      },
+      {
+        "id": "d4de411af16a",
+        "title": {
+          "ru": "Новый раздел",
+          "en": ""
+        },
+        "body": {
+          "ru": "",
+          "en": ""
+        },
+        "image": "/uploads/1790587101914-uirxmt-753e1f57-a560-4159-8fe2-d5a91aee592d.jpg"
+      },
+      {
+        "id": "504c03bcedcb",
+        "title": {
+          "ru": "Новый раздел",
+          "en": ""
+        },
+        "body": {
+          "ru": "",
+          "en": ""
+        },
+        "image": "/uploads/1790587107826-pyje9t-753e1f57-a560-4159-8fe2-d5a91aee592d.jpg"
+      },
+      {
+        "id": "20843fdb9b97",
+        "title": {
+          "ru": "Новый раздел",
+          "en": ""
+        },
+        "body": {
+          "ru": "",
+          "en": ""
+        },
+        "image": null
+      }
+    ]
+  }
+}

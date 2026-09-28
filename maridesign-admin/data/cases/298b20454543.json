@@ -1,0 +1,90 @@
+{
+  "id": "298b20454543",
+  "slug": "making-life-easier",
+  "published": true,
+  "order": 1789552821209,
+  "createdAt": "2026-09-16T10:00:21.209Z",
+  "updatedAt": "2026-09-28T09:00:16.083Z",
+  "title": {
+    "ru": "Облегчили жизнь юристов с помощью редизайна",
+    "en": ""
+  },
+  "company": "MMK",
+  "year": "2025",
+  "summary": {
+    "ru": "Провела редизайн сервиса для юристов по работе с договорами и составлением отчетов",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/Ov7VlnJ9GfM6RIgKHHY4nF3fg.png",
+    "en": null
+  },
+  "role": {
+    "ru": "Продуктовый дизайнер полного цикла",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "2 месяца",
+    "en": ""
+  },
+  "team": {
+    "ru": "Я, Аналитик, 2 разработчика",
+    "en": ""
+  },
+  "platform": {
+    "ru": "Веб приложение",
+    "en": ""
+  },
+  "sections": [
+    {
+      "id": "2c7ab9e7184b",
+      "type": "text",
+      "anchor": "novaya-sektsiya",
+      "title": {
+        "ru": "Новая секция",
+        "en": ""
+      },
+      "body": {
+        "ru": "ппппп",
+        "en": ""
+      },
+      "image": null,
+      "images": [],
+      "videoUrl": "",
+      "items": [
+        {
+          "ru": "",
+          "en": ""
+        }
+      ]
+    },
+    {
+      "id": "6777299781bb",
+      "type": "text",
+      "anchor": "novaya-sektsiya-2",
+      "title": {
+        "ru": "Новая секция",
+        "en": ""
+      },
+      "body": {
+        "ru": "",
+        "en": ""
+      },
+      "image": null,
+      "images": [],
+      "videoUrl": "",
+      "items": [
+        {
+          "ru": "",
+          "en": ""
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

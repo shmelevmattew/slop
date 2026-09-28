@@ -1,0 +1,17 @@
+{
+  "name": "maridesign-admin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Локальная админ-панель для наполнения кейсов без кода",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "build": "node server/build.js",
+    "import": "node server/import-framer.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

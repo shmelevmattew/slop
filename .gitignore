@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# macOS
+.DS_Store
+
+# logs
+*.log
+
+# admin credentials: secret path, password hash and session signing key
+**/data/admin.json
+
+# deploy scratch
+.deploy/
