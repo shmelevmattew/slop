@@ -1,12 +1,12 @@
 {
-  "id": "0297b65a6dbe",
+  "id": "ab30a06b243b",
   "slug": "novyy-keys",
   "published": false,
-  "order": 1790587452066,
-  "createdAt": "2026-09-28T09:24:12.066Z",
-  "updatedAt": "2026-09-28T09:24:12.066Z",
+  "order": 1790648476971,
+  "createdAt": "2026-09-29T02:21:16.971Z",
+  "updatedAt": "2026-09-29T02:23:08.597Z",
   "title": {
-    "ru": "Новый кейс",
+    "ru": "Дизайн интернет магазина",
     "en": ""
   },
   "company": "",
@@ -16,15 +16,15 @@
     "en": ""
   },
   "cover": {
-    "ru": null,
+    "ru": "/uploads/1790648500836-fnwt2v-0AmhdvgAMhnOTI3lzl4XudJ4c.png",
     "en": null
   },
   "role": {
-    "ru": "",
+    "ru": "Продуктовый дизайнер",
     "en": ""
   },
   "timeline": {
-    "ru": "",
+    "ru": "й месяц",
     "en": ""
   },
   "team": {
@@ -32,16 +32,16 @@
     "en": ""
   },
   "platform": {
-    "ru": "",
+    "ru": "Интернет магазин",
     "en": ""
   },
   "sections": [
     {
-      "id": "bdd286e6b02c",
+      "id": "e6b8388a4568",
       "type": "text",
       "anchor": "novaya-sektsiya",
       "title": {
-        "ru": "Новая секция",
+        "ru": "Сейчас этот кейс в разработке",
         "en": ""
       },
       "body": {

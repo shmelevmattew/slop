@@ -2,62 +2,74 @@
   "other": {
     "slug": "other",
     "title": {
-      "ru": "Разное",
+      "ru": "Не интерфейсы",
       "en": ""
     },
     "intro": {
       "ru": "",
       "en": ""
     },
-    "updatedAt": "2026-09-28T09:18:30.865Z",
+    "updatedAt": "2026-09-29T02:25:48.814Z",
     "items": [
       {
-        "id": "4409d81ebc9f",
+        "id": "5b27a83665b2",
         "title": {
-          "ru": "Новый раздел",
+          "ru": "Дизайн обложек для книг",
           "en": ""
         },
         "body": {
           "ru": "",
           "en": ""
         },
-        "image": "/uploads/1790587096666-9vr4d1-753e1f57-a560-4159-8fe2-d5a91aee592d.jpg"
+        "image": "/uploads/1790648644539-vkc8i4-eLCJSpHDhYvrgIEER7An4yM0rg.png"
       },
       {
-        "id": "d4de411af16a",
+        "id": "612be423ff91",
         "title": {
-          "ru": "Новый раздел",
+          "ru": "Игра ко дню программиста",
           "en": ""
         },
         "body": {
           "ru": "",
           "en": ""
         },
-        "image": "/uploads/1790587101914-uirxmt-753e1f57-a560-4159-8fe2-d5a91aee592d.jpg"
+        "image": "/uploads/1790648659509-7dfeqa-4mIHbq3mRvB1FzVn5UZ1XT5wkkk.png"
       },
       {
-        "id": "504c03bcedcb",
+        "id": "693a2085e533",
         "title": {
-          "ru": "Новый раздел",
+          "ru": "Полиграфия для глэмпинга",
           "en": ""
         },
         "body": {
           "ru": "",
           "en": ""
         },
-        "image": "/uploads/1790587107826-pyje9t-753e1f57-a560-4159-8fe2-d5a91aee592d.jpg"
+        "image": "/uploads/1790648673007-vjz5xh-0W4XczgVtTiXPfW4Kzy4vB9mGY-e47828.png"
       },
       {
-        "id": "20843fdb9b97",
+        "id": "dae54c2e9422",
         "title": {
-          "ru": "Новый раздел",
+          "ru": "Интернет магазин \"Стальное дело\"",
           "en": ""
         },
         "body": {
           "ru": "",
           "en": ""
         },
-        "image": null
+        "image": "/uploads/1790648694819-6ku56r-0AmhdvgAMhnOTI3lzl4XudJ4c-18cf25.png"
+      },
+      {
+        "id": "7ae594a2c16f",
+        "title": {
+          "ru": "Оформление соц-сетей",
+          "en": ""
+        },
+        "body": {
+          "ru": "",
+          "en": ""
+        },
+        "image": "/uploads/1790648739220-lnt2bz-__________.png"
       }
     ]
   }
