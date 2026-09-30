@@ -53,13 +53,21 @@ function langSwitchHtml(path, locale) {
       </div>`;
 }
 
-function avatarHtml(site, locale, className = 'hero-avatar') {
+function avatarHtml(site, locale, className = 'hero-avatar', { interactive = false } = {}) {
   const src = site.avatar;
   if (!src) return '';
   const title = site.siteTitle?.[locale] || site.siteTitle?.ru || '';
-  return `<a class="${className}" href="${escapeHtml(url('/', locale))}">
-  <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" width="60" height="60" decoding="async">
-</a>`;
+  const image = `<img src="${escapeHtml(
+    src
+  )}" alt="${escapeHtml(title)}" width="60" height="60" decoding="async" draggable="false">`;
+  // The hero avatar is a button so a click can play the animation instead of
+  // navigating away; the footer avatar keeps linking back to the home page.
+  if (interactive) {
+    return `<button type="button" class="${className}" data-avatar aria-label="${escapeHtml(
+      title
+    )}">${image}</button>`;
+  }
+  return `<a class="${className}" href="${escapeHtml(url('/', locale))}">${image}</a>`;
 }
 
 // The header is a floating pill pinned to the top of the viewport, matching the
@@ -239,7 +247,7 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=19">
+<link rel="stylesheet" href="/static/site.css?v=20">
 ${metricaHtml(site)}
 </head>
 <body>
@@ -250,6 +258,8 @@ ${body}
 </main>
 ${footerHtml(site, locale)}
 <script src="/static/copy-contact.js" defer></script>
+<script src="/static/media.js" defer></script>
+<script src="/static/avatar.js" defer></script>
 </body>
 </html>`;
 }
@@ -270,6 +280,30 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
     site.siteDescription?.[locale] || site.siteDescription?.ru || '';
   const primary = hero.primary?.[locale] || hero.primary?.ru || '';
   const secondary = hero.secondary?.[locale] || hero.secondary?.ru || '';
+
+  // Contacts are repeated at the top of the hero (they also stay in the footer).
+  // They copy to the clipboard on click, reusing the footer contact behaviour.
+  const contacts = site.contacts || {};
+  const copiedLabel = locale === 'ru' ? 'Скопировано' : 'Copied';
+  const contactRows = [];
+  if (contacts.email) {
+    contactRows.push(
+      `<button type="button" class="footer-contact hero-contact" data-copy="${escapeHtml(
+        contacts.email
+      )}" data-copy-label="${escapeHtml(copiedLabel)}" title="${escapeHtml(
+        locale === 'ru' ? 'Скопировать почту' : 'Copy email'
+      )}"><span class="footer-contact-text">${escapeHtml(contacts.email)}</span></button>`
+    );
+  }
+  if (contacts.telegram) {
+    contactRows.push(
+      `<button type="button" class="footer-contact hero-contact" data-copy="${escapeHtml(
+        contacts.telegram
+      )}" data-copy-label="${escapeHtml(copiedLabel)}" title="${escapeHtml(
+        locale === 'ru' ? 'Скопировать телеграм' : 'Copy Telegram'
+      )}"><span class="footer-contact-text">${escapeHtml(contacts.telegram)}</span></button>`
+    );
+  }
 
   const buttons =
     buttonOverride !== null
@@ -292,9 +326,14 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
   return `<section class="framer-hero">
     <div class="hero-inner">
       <div class="hero-text">
-        ${avatarHtml(site, locale, 'hero-avatar')}
+        ${avatarHtml(site, locale, 'hero-avatar', { interactive: true })}
         <h1 class="hero-name">${escapeHtml(name)}</h1>
         <p class="hero-description">${escapeHtml(description)}</p>
+        ${
+          contactRows.length
+            ? `<div class="hero-contacts">${contactRows.join('\n          ')}</div>`
+            : ''
+        }
       </div>
       ${buttons ? `<div class="hero-buttons">${buttons}</div>` : ''}
     </div>
@@ -423,7 +462,7 @@ export function renderCase({ site, entry, locale, allCases, draft = false, admin
     cover
       ? `<figure class="case-cover"><img src="${escapeHtml(cover)}" alt="${escapeHtml(
           titleText
-        )}" loading="eager" decoding="async"></figure>`
+        )}" loading="eager" decoding="async" draggable="false" data-protected></figure>`
       : ''
   }
   <div class="case-body-wrap">

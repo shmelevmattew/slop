@@ -418,6 +418,53 @@ img {
   border-radius: inherit;
 }
 
+/* The hero avatar is a button; a click plays a short bounce. */
+.hero-avatar {
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.hero-avatar.is-bouncing {
+  animation: avatar-bounce 0.6s ease;
+}
+
+@keyframes avatar-bounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    transform: translateY(-10px) scale(1.08);
+  }
+  55% {
+    transform: translateY(0) scale(0.96);
+  }
+  75% {
+    transform: translateY(-4px) scale(1.03);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-avatar.is-bouncing {
+    animation: none;
+  }
+}
+
+.hero-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 4px;
+}
+
+.hero-contact {
+  font-size: 15px;
+}
+
 .hero-name {
   font-family: var(--font-display);
   font-weight: 500;
@@ -797,6 +844,15 @@ img {
   display: flex;
   flex-flow: column;
   gap: 32px;
+}
+
+.other-projects-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0;
 }
 
 .framer-projects {
@@ -1260,7 +1316,7 @@ img {
 
 .figure {
   margin: 0;
-  border-radius: var(--radius-lg);
+  border-radius: 8px;
   overflow: hidden;
   background: var(--color-subtle);
 }
@@ -1268,32 +1324,179 @@ img {
 .figure-img {
   width: 100%;
   height: auto;
+  display: block;
 }
 
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+/* ---------- image full-screen button ----------
+   Sits under every case image; opens the lightbox. */
+
+.media-fullscreen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-soft);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
-.gallery-item {
-  margin: 0;
-  border-radius: var(--radius);
+.media-fullscreen:hover {
+  color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+/* ---------- gallery slider ----------
+   One image at a time, sized to the image itself instead of a fixed crop. */
+
+.gallery-slider {
+  position: relative;
+  width: 100%;
   overflow: hidden;
-  background: var(--color-subtle);
+  border-radius: 8px;
+}
+
+.gallery-track {
+  display: flex;
+  align-items: flex-start;
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+.gallery-slide {
+  flex: 0 0 100%;
+  margin: 0;
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
 }
 
 .gallery-img {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  height: auto;
+  display: block;
+  border-radius: 8px;
 }
 
-.gallery-item figcaption {
-  padding: 8px 12px;
-  font-family: var(--font-ui);
-  font-size: 12px;
-  color: var(--color-muted);
+.slider-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--color-text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  transition: background 0.15s ease;
+}
+
+.slider-nav:hover {
+  background: #fff;
+}
+
+.slider-prev {
+  left: 12px;
+}
+
+.slider-next {
+  right: 12px;
+}
+
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-border);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.slider-dot.is-active {
+  background: var(--color-text);
+  transform: scale(1.2);
+}
+
+/* ---------- lightbox ---------- */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgba(4, 17, 31, 0.9);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+/* Images are not meant to be saved: no text selection, no native drag. */
+.figure-img,
+.gallery-img,
+.case-cover img,
+.card-media-img img {
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .split {
@@ -1354,7 +1557,7 @@ img {
 .video,
 .video-embed {
   width: 100%;
-  border-radius: var(--radius-lg);
+  border-radius: 8px;
   overflow: hidden;
   background: #000;
 }

@@ -16,6 +16,7 @@ import {
   readCase,
   saveCase,
   deleteCase,
+  reorderCases,
   newCase,
   newSection,
   normalizeCase,
@@ -202,6 +203,12 @@ async function handleApi(req, res, url) {
     const body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
     const created = saveCase({ ...newCase(body.title?.ru || 'Новый кейс'), ...body });
     sendJson(res, 201, created);
+    return;
+  }
+
+  if (route === 'cases/reorder' && req.method === 'POST') {
+    const body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    sendJson(res, 200, reorderCases(body.ids));
     return;
   }
 

@@ -341,3 +341,18 @@ export function deleteCase(id) {
 export function publishedCases() {
   return readCases().filter((c) => c.published);
 }
+
+// Persists a new manual order for the case list. `ids` is the full list in the
+// desired order; every case gets an index-based `order`, so the sidebar and the
+// home page grid follow the same sequence.
+export function reorderCases(ids) {
+  const order = new Map(
+    (Array.isArray(ids) ? ids : []).map((id, index) => [String(id), index])
+  );
+  for (const entry of readCases()) {
+    if (!order.has(entry.id)) continue;
+    entry.order = order.get(entry.id);
+    saveCase(entry);
+  }
+  return readCases();
+}

@@ -222,6 +222,43 @@ select {
   margin-bottom: 4px;
 }
 
+.case-item-handle {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: grab;
+}
+
+.case-item.dragging {
+  opacity: 0.5;
+}
+
+.case-item.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.case-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.case-item:hover .case-item-actions,
+.case-item.active .case-item-actions {
+  opacity: 1;
+}
+
+.case-item-actions .icon-btn {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+
 .case-item:hover {
   background: var(--subtle);
 }

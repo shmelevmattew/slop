@@ -27,6 +27,7 @@ const state = {
   cases: [],
   current: null,
   page: null,
+  site: null,
   lang: 'ru',
   schema: { sectionTypes: [] },
   collapsed: new Set(),
@@ -70,6 +71,38 @@ async function loadSchema() {
 async function loadCases() {
   state.cases = await api('/cases');
   renderCaseList();
+}
+
+async function loadSite() {
+  state.site = await api('/site');
+}
+
+// The home hero button ("Последняя работа") points at one case. The admin picks
+// it here and the choice is stored in site.json as hero.primaryHref.
+async function setLatestWork(slug) {
+  if (!state.site) await loadSite();
+  state.site.hero = state.site.hero || {};
+  state.site.hero.primaryHref = slug ? `/case/${slug}` : '';
+  try {
+    await api('/site', { method: 'PUT', body: JSON.stringify(state.site) });
+    renderEditor();
+    status('Кнопка «Последняя работа» обновлена');
+  } catch (error) {
+    status(error.message, true);
+  }
+}
+
+async function reorderCases(ids) {
+  try {
+    state.cases = await api('/cases/reorder', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+    renderCaseList();
+    status('Порядок кейсов сохранён');
+  } catch (error) {
+    status(error.message, true);
+  }
 }
 
 async function openCase(id) {
@@ -145,11 +178,12 @@ function renderCaseList() {
     return;
   }
   list.innerHTML = state.cases
-    .map((entry) => {
+    .map((entry, index) => {
       const active = state.current?.id === entry.id ? ' active' : '';
       const cover = entry.cover?.ru || entry.cover?.en || '';
       const translated = filled(entry.title.en);
-      return `<div class="case-item${active}" data-id="${entry.id}">
+      return `<div class="case-item${active}" data-id="${entry.id}" draggable="true">
+      <span class="case-item-handle" title="Перетащите, чтобы изменить порядок">⠿</span>
       <div class="case-item-thumb">${
         cover ? `<img src="${escapeHtml(cover)}" alt="">` : ''
       }</div>
@@ -159,6 +193,14 @@ function renderCaseList() {
           [entry.slug, translated ? 'EN ✓' : 'EN —'].join(' · ')
         )}</div>
       </div>
+      <div class="case-item-actions">
+        <button class="icon-btn" data-case-up="${entry.id}" ${
+        index === 0 ? 'disabled' : ''
+      } title="Выше">↑</button>
+        <button class="icon-btn" data-case-down="${entry.id}" ${
+        index === state.cases.length - 1 ? 'disabled' : ''
+      } title="Ниже">↓</button>
+      </div>
       <span class="dot ${entry.published ? 'dot-published' : 'dot-draft'}" title="${
         entry.published ? 'Опубликован' : 'Черновик'
       }"></span>
@@ -167,7 +209,67 @@ function renderCaseList() {
     .join('');
 
   list.querySelectorAll('.case-item').forEach((node) => {
-    node.addEventListener('click', () => openCase(node.dataset.id));
+    node.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      openCase(node.dataset.id);
+    });
+  });
+
+  list.querySelectorAll('[data-case-up]').forEach((btn) =>
+    btn.addEventListener('click', () => moveCase(btn.dataset.caseUp, -1))
+  );
+  list.querySelectorAll('[data-case-down]').forEach((btn) =>
+    btn.addEventListener('click', () => moveCase(btn.dataset.caseDown, 1))
+  );
+
+  bindCaseDragAndDrop();
+}
+
+function moveCase(id, delta) {
+  const cases = state.cases;
+  const index = cases.findIndex((c) => c.id === id);
+  const target = index + delta;
+  if (index < 0 || target < 0 || target >= cases.length) return;
+  [cases[index], cases[target]] = [cases[target], cases[index]];
+  renderCaseList();
+  reorderCases(cases.map((c) => c.id));
+}
+
+function bindCaseDragAndDrop() {
+  const list = el('case-list');
+  let draggedId = null;
+
+  list.querySelectorAll('.case-item').forEach((node) => {
+    node.addEventListener('dragstart', (e) => {
+      draggedId = node.dataset.id;
+      node.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    node.addEventListener('dragend', () => {
+      node.classList.remove('dragging');
+      draggedId = null;
+    });
+    node.addEventListener('dragover', (e) => {
+      if (!draggedId || draggedId === node.dataset.id) return;
+      e.preventDefault();
+      node.classList.add('drag-over');
+    });
+    node.addEventListener('dragleave', () => node.classList.remove('drag-over'));
+    node.addEventListener('drop', (e) => {
+      e.preventDefault();
+      node.classList.remove('drag-over');
+      const targetId = node.dataset.id;
+      if (!draggedId || draggedId === targetId) return;
+      const cases = state.cases;
+      const from = cases.findIndex((c) => c.id === draggedId);
+      const to = cases.findIndex((c) => c.id === targetId);
+      if (from < 0 || to < 0) return;
+      const [moved] = cases.splice(from, 1);
+      cases.splice(to, 0, moved);
+      draggedId = null;
+      renderCaseList();
+      reorderCases(cases.map((c) => c.id));
+    });
   });
 }
 
@@ -177,11 +279,15 @@ function localizedInput({ label, value, path, multiline = false, rows = 4, place
   const active = value[state.lang] ?? '';
   const other = state.lang === 'ru' ? value.en : value.ru;
   const mark = filled(other) ? '<span class="fill-mark" title="Перевод заполнен">●</span>' : '';
+  // The field is a { ru, en } object, so the edit has to land on the active
+  // locale. Writing to `path` directly would replace the object with a string
+  // and the value would vanish on the next re-render.
+  const inputPath = `${path}.${state.lang}`;
   const input = multiline
-    ? `<textarea class="textarea" data-path="${path}" rows="${rows}" placeholder="${escapeHtml(
+    ? `<textarea class="textarea" data-path="${inputPath}" rows="${rows}" placeholder="${escapeHtml(
         placeholder
       )}">${escapeHtml(active)}</textarea>`
-    : `<input class="input" data-path="${path}" value="${escapeHtml(active)}" placeholder="${escapeHtml(
+    : `<input class="input" data-path="${inputPath}" value="${escapeHtml(active)}" placeholder="${escapeHtml(
         placeholder
       )}">`;
   return `<div class="field">
@@ -199,9 +305,12 @@ function langTabs() {
   </div>`;
 }
 
-function imagePicker({ label, value, path, hint = '' }) {
+function imagePicker({ label, value, path, hint = '', localized = false }) {
   const currentValue = value?.[state.lang] || '';
   const otherLang = state.lang === 'ru' ? value?.en : value?.ru;
+  // A localized image (the case cover) is a { ru, en } object, so the URL field
+  // writes to the active locale; a plain image field keeps the path as-is.
+  const inputPath = localized ? `${path}.${state.lang}` : path;
   return `<div class="field">
     <label>${escapeHtml(label)} <span style="color:var(--muted)">(${state.lang.toUpperCase()})</span></label>
     <div class="image-picker">
@@ -226,7 +335,7 @@ function imagePicker({ label, value, path, hint = '' }) {
               : ''
           }
         </div>
-        <input class="input url-input" data-path="${path}" value="${escapeHtml(
+        <input class="input url-input" data-path="${inputPath}" value="${escapeHtml(
           currentValue
         )}" placeholder="или вставьте ссылку на изображение">
         ${
@@ -443,6 +552,7 @@ function renderEditor() {
         label: 'Обложка (на главной странице)',
         value: current.cover,
         path: 'cover',
+        localized: true,
         hint: 'Лучше 16:9, например 1920×1080',
       })}
     </div>
@@ -456,6 +566,25 @@ function renderEditor() {
       </div>
       <div class="grid-2">
         ${localizedInput({ label: 'Платформа', value: current.platform, path: 'platform', placeholder: 'Веб приложение' })}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Кнопка «Последняя работа» на главной</h2>
+      <p class="card-hint">Выберите кейс, который открывается по кнопке в главном блоке на главной странице.</p>
+      <div class="field">
+        <label>Кейс</label>
+        <select class="select" id="latest-work-select">
+          <option value="">— не выбрано —</option>
+          ${state.cases
+            .map(
+              (c) =>
+                `<option value="${escapeHtml(c.slug)}" ${
+                  (state.site?.hero?.primaryHref || '') === `/case/${c.slug}` ? 'selected' : ''
+                }>${escapeHtml(c.title.ru || c.slug)}</option>`
+            )
+            .join('')}
+        </select>
       </div>
     </div>
 
@@ -543,7 +672,8 @@ function bindEditorEvents() {
       const raw = isCheckbox ? input.checked : input.value;
       setByPath(state.current, input.dataset.path, raw);
       state.dirty = true;
-      if (input.dataset.path.endsWith('.title') || input.dataset.path === 'title') {
+      // Keep the collapsed section header in sync while the title is typed.
+      if (/\.title\.(ru|en)$/.test(input.dataset.path)) {
         const sectionId = input.dataset.path.split('.')[1];
         const head = sectionId
           ? main.querySelector(`[data-section="${sectionId}"] .section-heading-text`)
@@ -558,6 +688,7 @@ function bindEditorEvents() {
   el('btn-save')?.addEventListener('click', saveCurrent);
   el('btn-delete')?.addEventListener('click', removeCurrent);
   el('btn-add-section')?.addEventListener('click', openSectionPicker);
+  el('latest-work-select')?.addEventListener('change', (e) => setLatestWork(e.target.value));
 
   main.querySelectorAll('[data-collapse]').forEach((btn) =>
     btn.addEventListener('click', () => {
@@ -1144,6 +1275,7 @@ document.addEventListener('keydown', (e) => {
 (async () => {
   try {
     await loadSchema();
+    await loadSite();
     await loadCases();
     if (state.cases.length) await openCase(state.cases[0].id);
   } catch (error) {

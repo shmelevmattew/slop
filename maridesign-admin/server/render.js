@@ -47,7 +47,21 @@ function alt(value, locale) {
 
 function imageTag(src, altText, className = '', loading = 'lazy') {
   if (!src) return '';
-  return `<img class="${className}" src="${escapeHtml(src)}" alt="${altText}" loading="${loading}" decoding="async">`;
+  return `<img class="${className}" src="${escapeHtml(src)}" alt="${altText}" loading="${loading}" decoding="async" draggable="false" data-protected>`;
+}
+
+// A button under every image that opens it full screen. The icon is inline so it
+// needs no extra request; the label is localized for screen readers.
+function fullscreenButton(src, label, locale) {
+  if (!src) return '';
+  const text = locale === 'ru' ? 'Открыть на весь экран' : 'View full screen';
+  return `<button type="button" class="media-fullscreen" data-lightbox="${escapeHtml(
+    src
+  )}" aria-label="${escapeHtml(text)}" title="${escapeHtml(text)}">
+  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+    <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>`;
 }
 
 function sectionMeta(section, locale) {
@@ -66,7 +80,9 @@ function sectionMeta(section, locale) {
 
 function renderSection(section, locale, index) {
   const m = sectionMeta(section, locale);
-  const heading = m.title || sectionLabels[section.type]?.[locale] || '';
+  // A section without a title is rendered without a heading and is skipped by
+  // the sticky header nav, so "no title" really means "no label anywhere".
+  const heading = m.title;
   const idAttr = m.anchor ? ` id="${escapeHtml(m.anchor)}"` : ` id="section-${index + 1}"`;
   const headingHtml = heading
     ? `<h2 class="section-title">${escapeHtml(heading)}</h2>`
@@ -78,23 +94,45 @@ function renderSection(section, locale, index) {
       return `<section class="case-section section-image"${idAttr}>
   ${headingHtml}
   <figure class="figure">${imageTag(m.image, escapeHtml(heading), 'figure-img')}</figure>
+  ${fullscreenButton(m.image, heading, locale)}
 </section>`;
 
     case 'gallery': {
-      const items = m.images
+      const slides = m.images
         .map(
           (src, i) =>
-            `<figure class="gallery-item">${imageTag(
+            `<figure class="gallery-slide">${imageTag(
               src,
               `${escapeHtml(heading)} — ${i + 1}`,
               'gallery-img'
-            )}<figcaption>${i + 1}</figcaption></figure>`
+            )}${fullscreenButton(src, heading, locale)}</figure>`
         )
         .join('\n');
+      const dots = m.images
+        .map(
+          (_, i) =>
+            `<button type="button" class="slider-dot${
+              i === 0 ? ' is-active' : ''
+            }" data-slider-dot="${i}" aria-label="${i + 1}"></button>`
+        )
+        .join('');
       return `<section class="case-section section-gallery"${idAttr}>
   ${headingHtml}
   ${bodyHtml}
-  <div class="gallery">${items}</div>
+  <div class="gallery-slider" data-slider>
+    <div class="gallery-track">${slides}</div>
+    ${
+      m.images.length > 1
+        ? `<button type="button" class="slider-nav slider-prev" data-slider-prev aria-label="${
+            locale === 'ru' ? 'Предыдущее изображение' : 'Previous image'
+          }">‹</button>
+    <button type="button" class="slider-nav slider-next" data-slider-next aria-label="${
+      locale === 'ru' ? 'Следующее изображение' : 'Next image'
+    }">›</button>
+    <div class="slider-dots" data-slider-dots>${dots}</div>`
+        : ''
+    }
+  </div>
 </section>`;
     }
 
@@ -107,7 +145,7 @@ function renderSection(section, locale, index) {
       m.image,
       escapeHtml(heading),
       'figure-img'
-    )}</figure></div>
+    )}</figure>${fullscreenButton(m.image, heading, locale)}</div>
   </div>
 </section>`;
 
@@ -119,7 +157,7 @@ function renderSection(section, locale, index) {
       m.image,
       escapeHtml(heading),
       'figure-img'
-    )}</figure></div>
+    )}</figure>${fullscreenButton(m.image, heading, locale)}</div>
     <div class="split-text">${bodyHtml}</div>
   </div>
 </section>`;
