@@ -233,6 +233,7 @@ export function layout({
   backHref = '',
   backLabel = '',
   headerSections = [],
+  bodyClass = '',
 }) {
   const siteTitle = site.siteTitle?.[locale] || site.siteTitle?.ru || 'Portfolio';
   const siteDescription = site.siteDescription?.[locale] || site.siteDescription?.ru || '';
@@ -247,16 +248,15 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=21">
+<link rel="stylesheet" href="/static/site.css?v=22">
 ${metricaHtml(site)}
 </head>
-<body>
+<body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
 ${draft ? `<div class="draft-banner">${escapeHtml(t(locale, 'draftNotice'))} ${adminLink ? `<a href="${escapeHtml(adminLink)}">${escapeHtml(t(locale, 'viewDraft'))}</a>` : ''}</div>` : ''}
 ${headerHtml({ site, locale, path, activeId, mode: headerMode, backHref, backLabel, sections: headerSections })}
 <main>
 ${body}
 </main>
-${footerHtml(site, locale)}
 <script src="/static/copy-contact.js" defer></script>
 <script src="/static/media.js" defer></script>
 <script src="/static/home.js" defer></script>
@@ -323,17 +323,15 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
   return `<section class="framer-hero">
     <div class="hero-inner">
       <div class="hero-text">
-        <div class="hero-lead">
-          ${avatarHtml(site, locale, 'hero-avatar', { interactive: true })}
-          ${
-            contactRows.length
-              ? `<div class="hero-contacts">${contactRows.join('\n          ')}</div>`
-              : ''
-          }
-        </div>
+        ${avatarHtml(site, locale, 'hero-avatar', { interactive: true })}
         <h1 class="hero-name">${escapeHtml(name)}</h1>
         <p class="hero-description">${escapeHtml(description)}</p>
       </div>
+      ${
+        contactRows.length
+          ? `<div class="hero-contacts">${contactRows.join('\n        ')}</div>`
+          : ''
+      }
       ${buttons ? `<div class="hero-buttons">${buttons}</div>` : ''}
     </div>
   </section>`;
@@ -395,6 +393,7 @@ export function renderHome({ site, cases, locale, draftId = null }) {
     path: '/',
     activeId: 'projects',
     body,
+    bodyClass: 'page-home',
   });
 }
 

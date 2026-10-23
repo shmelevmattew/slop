@@ -462,12 +462,6 @@ img {
   }
 }
 
-.hero-lead {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
 .hero-contacts {
   display: flex;
   flex-direction: column;
@@ -855,6 +849,12 @@ img {
   justify-content: center;
   overflow: hidden;
   isolation: isolate;
+}
+
+/* The home page is a fixed screen: only the projects wheel scrolls, the page
+   itself never does. */
+body.page-home {
+  overflow: hidden;
 }
 
 /* The pastel wash moves from the hero onto the whole screen so it sits behind
