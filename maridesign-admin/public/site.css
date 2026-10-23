@@ -948,7 +948,62 @@ body.page-home {
 }
 
 .projects-wheel .framer-card.is-center .card-media {
-  box-shadow: 0 24px 48px -24px rgba(4, 17, 31, 0.5);
+  box-shadow: 0 28px 64px -32px rgba(4, 17, 31, 0.22);
+}
+
+/* Secondary line inside a card pill (the gallery captions). */
+.card-pill-sub {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-muted);
+  margin: 2px 0 0;
+}
+
+/* Small caption above the wheel on the gallery page. */
+.split-intro {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-muted);
+  text-align: center;
+  max-width: 420px;
+  margin: 0 0 16px;
+}
+
+/* With a caption above it the wheel has to be a little shorter so the fixed
+   screen still fits. */
+.home-projects.has-intro .projects-wheel {
+  height: min(60vh, 560px);
+  padding-block: calc(min(60vh, 560px) / 2 - 158px);
+}
+
+/* ---------- resume page panel ---------- */
+
+.resume-panel {
+  width: 100%;
+}
+
+.resume-scroll {
+  width: 100%;
+  max-height: min(72vh, 680px);
+  overflow-y: auto;
+  padding-right: 10px;
+  display: flex;
+  flex-flow: column;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(4, 17, 31, 0.22) transparent;
+}
+
+.resume-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.resume-scroll::-webkit-scrollbar-thumb {
+  background: rgba(4, 17, 31, 0.18);
+  border-radius: 3px;
 }
 
 @media (max-width: 1279.98px) {
@@ -1276,7 +1331,8 @@ body.page-home {
 
 .card-pill {
   display: inline-flex;
-  align-items: center;
+  flex-flow: column;
+  align-items: flex-start;
   max-width: 100%;
   padding: 8px 14px;
   border-radius: 8px;

@@ -248,7 +248,7 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=22">
+<link rel="stylesheet" href="/static/site.css?v=23">
 ${metricaHtml(site)}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
@@ -522,41 +522,31 @@ export function renderGallery({ site, page, locale }) {
             locale === 'ru' ? 'Нет картинки' : 'No image'
           )}</div>`;
 
-      return `<figure class="gallery-card">
-      ${media}
-      ${
-        itemTitle || body
-          ? `<figcaption class="gallery-card-caption">${
-              itemTitle
-                ? `<h2 class="gallery-card-title">${escapeHtml(itemTitle)}</h2>`
-                : ''
-            }${
-              body ? `<p class="gallery-card-body">${escapeHtml(body)}</p>` : ''
-            }</figcaption>`
-          : ''
-      }
+      return `<figure class="framer-card">
+      <div class="card-shell">${media}</div>
+      <div class="card-caption"><div class="card-pill"><p class="card-pill-text">${escapeHtml(
+        itemTitle
+      )}</p>${
+        body ? `<p class="card-pill-sub">${escapeHtml(body)}</p>` : ''
+      }</div></div>
     </figure>`;
     })
     .filter(Boolean)
     .join('\n');
 
-  const body = `<div class="framer-page">
-  ${heroHtml(site, locale)}
-  <div class="framer-projects">
-    ${
-      intro
-        ? `<div class="gallery-heading"><p class="gallery-heading-intro">${escapeHtml(
-            intro
-          )}</p></div>`
-        : ''
-    }
-    ${
-      cards
-        ? `<div class="gallery-grid">${cards}</div>`
-        : `<div class="empty-state">${escapeHtml(
-            locale === 'ru' ? 'Здесь пока пусто.' : 'Nothing here yet.'
-          )}</div>`
-    }
+  const body = `<div class="framer-page framer-page-home">
+  <div class="home-stage">
+    ${heroHtml(site, locale)}
+    <div class="framer-projects home-projects${intro ? ' has-intro' : ''}">
+      ${intro ? `<p class="split-intro">${escapeHtml(intro)}</p>` : ''}
+      ${
+        cards
+          ? `<div class="projects-wheel" data-wheel>${cards}</div>`
+          : `<div class="empty-state">${escapeHtml(
+              locale === 'ru' ? 'Здесь пока пусто.' : 'Nothing here yet.'
+            )}</div>`
+      }
+    </div>
   </div>
 </div>`;
 
@@ -568,6 +558,7 @@ export function renderGallery({ site, page, locale }) {
     path: '/other',
     activeId: 'other',
     body,
+    bodyClass: 'page-home',
   });
 }
 
@@ -665,9 +656,11 @@ export function renderResume({ site, locale, pdfReady = false }) {
     .filter(Boolean)
     .join('\n');
 
-  const body = `<div class="framer-page">
-  ${heroHtml(site, locale, { buttons: heroButtons })}
-  <div class="framer-projects">
+  const body = `<div class="framer-page framer-page-home">
+  <div class="home-stage">
+    ${heroHtml(site, locale, { buttons: heroButtons })}
+    <div class="framer-projects home-projects resume-panel">
+      <div class="resume-scroll">
     ${
       experience
         ? `<section class="resume-block">
@@ -708,6 +701,8 @@ export function renderResume({ site, locale, pdfReady = false }) {
     </section>`
         : ''
     }
+      </div>
+    </div>
   </div>
 </div>`;
 
@@ -720,6 +715,7 @@ export function renderResume({ site, locale, pdfReady = false }) {
     path: '/resume',
     activeId: 'resume',
     body,
+    bodyClass: 'page-home',
   });
 }
 
