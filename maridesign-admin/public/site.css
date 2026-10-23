@@ -980,16 +980,57 @@ body.page-home {
   }
 }
 
+/* On phones and small tablets the fixed "screen" is dropped: the page scrolls
+   normally and the projects are a plain list instead of the wheel. */
 @media (max-width: 1023.98px) {
+  .framer-page-home {
+    min-height: auto;
+  }
+
+  body.page-home {
+    overflow: auto;
+  }
+
   .home-stage {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
     gap: 32px;
   }
 
-  .projects-wheel {
+  .home-projects {
+    align-items: stretch;
+  }
+
+  .projects-wheel,
+  .home-projects.has-intro .projects-wheel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: none;
-    height: 56vh;
-    padding-block: calc(28vh - 120px);
+    height: auto;
+    padding-block: 0;
+    overflow: visible;
+    scroll-snap-type: none;
+    perspective: none;
+    gap: 20px;
+  }
+
+  .projects-wheel .framer-card {
+    flex: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .resume-scroll {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .projects-wheel,
+  .home-projects.has-intro .projects-wheel {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

@@ -248,7 +248,7 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=27">
+<link rel="stylesheet" href="/static/site.css?v=28">
 ${metricaHtml(site)}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>

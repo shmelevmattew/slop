@@ -1,43 +1,63 @@
-// Home / gallery: the card list scrolls like a vertical wheel. The card closest
-// to the centre of the wheel gets `is-center` (full size, full opacity), the
-// rest fade out. The list is cloned into three copies and the viewport is kept
-// inside the middle one, so the wheel loops endlessly.
+// Desktop: the card list is a vertical "wheel" — the card closest to the centre
+// gets `is-center`, the list is cloned into three copies and the viewport is kept
+// inside the middle one, so it loops endlessly.
+//
+// On phones and small tablets the CSS turns the list into a plain grid that
+// scrolls with the page, so the wheel is not built at all there.
 (function () {
   var wheel = document.querySelector('[data-wheel]');
   if (!wheel) return;
 
-  var originals = Array.prototype.slice.call(wheel.children).filter(function (node) {
-    return node.classList && node.classList.contains('framer-card');
-  });
-  if (!originals.length) return;
-
-  var count = originals.length;
+  var small = window.matchMedia('(max-width: 1023.98px)');
+  var cards = [];
   var setHeight = 0;
 
-  // Two extra copies (before and after) turn the list into a loop. Scrolling
-  // then jumps by exactly one copy, which is invisible because the content is
-  // identical.
-  if (count > 1) {
-    for (var copy = 0; copy < 2; copy++) {
-      var frag = document.createDocumentFragment();
-      originals.forEach(function (node) {
-        frag.appendChild(node.cloneNode(true));
-      });
-      wheel.appendChild(frag);
-    }
+  function originals() {
+    return Array.prototype.slice.call(
+      wheel.querySelectorAll('.framer-card:not([data-clone])')
+    );
   }
 
-  var cards = Array.prototype.slice.call(wheel.querySelectorAll('.framer-card'));
+  function allCards() {
+    return Array.prototype.slice.call(wheel.querySelectorAll('.framer-card'));
+  }
+
+  function neutralize() {
+    allCards().forEach(function (card) {
+      if (card.hasAttribute('data-clone')) card.remove();
+      else card.classList.remove('is-center');
+    });
+    wheel.scrollTop = 0;
+    setHeight = 0;
+    cards = originals();
+  }
 
   function measure() {
+    var list = allCards();
+    var count = originals().length;
     setHeight =
-      count > 1
-        ? cards[count].getBoundingClientRect().top - cards[0].getBoundingClientRect().top
+      count > 1 && list[count]
+        ? list[count].getBoundingClientRect().top - list[0].getBoundingClientRect().top
         : 0;
   }
 
-  function start() {
+  function build() {
+    var list = originals();
+    if (list.length > 1) {
+      for (var copy = 0; copy < 2; copy++) {
+        var frag = document.createDocumentFragment();
+        list.forEach(function (node) {
+          var clone = node.cloneNode(true);
+          clone.setAttribute('data-clone', '');
+          frag.appendChild(clone);
+        });
+        wheel.appendChild(frag);
+      }
+    }
+    cards = allCards();
+    measure();
     if (setHeight > 0) wheel.scrollTop = setHeight;
+    pick();
   }
 
   // Keep the viewport inside the middle copy.
@@ -48,6 +68,7 @@
   }
 
   function pick() {
+    if (small.matches) return;
     var rect = wheel.getBoundingClientRect();
     var mid = rect.top + rect.height / 2;
     var best = null;
@@ -70,7 +91,7 @@
   // Coalesce scroll events into one measurement per frame.
   var queued = false;
   function onScroll() {
-    if (queued) return;
+    if (queued || small.matches) return;
     queued = true;
     requestAnimationFrame(function () {
       queued = false;
@@ -79,21 +100,21 @@
     });
   }
 
+  function apply() {
+    neutralize();
+    if (!small.matches) build();
+  }
+
   wheel.addEventListener('scroll', onScroll, { passive: true });
 
   window.addEventListener('load', function () {
+    if (small.matches) return;
     measure();
-    normalize();
     pick();
   });
 
-  window.addEventListener('resize', function () {
-    measure();
-    start();
-    pick();
-  });
+  window.addEventListener('resize', apply);
+  if (small.addEventListener) small.addEventListener('change', apply);
 
-  measure();
-  start();
-  pick();
+  apply();
 })();

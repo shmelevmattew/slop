@@ -763,8 +763,35 @@ select {
 }
 
 @media (max-width: 900px) {
+  .topbar {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px 12px;
+  }
+
+  .topbar-actions {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar,
+  .main {
+    min-width: 0;
+  }
+
+  /* The image picker stacks so it fits a phone width. */
+  .image-picker {
+    flex-direction: column;
+  }
+
+  .image-preview {
+    width: 100%;
+    height: 180px;
   }
 
   .sidebar {
@@ -772,6 +799,20 @@ select {
     max-height: none;
     border-right: none;
     border-bottom: 1px solid var(--border);
+  }
+
+  .main {
+    padding: 16px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  /* Title and its buttons stack instead of sitting on one line. */
+  .row-between {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .grid-2,
