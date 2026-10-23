@@ -464,8 +464,23 @@ img {
 
 .hero-contacts {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-flow: row wrap;
+  align-items: baseline;
+  gap: 6px 28px;
+}
+
+.hero-contact-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.hero-contact-label {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-muted);
 }
 
 .hero-contact {
@@ -993,6 +1008,7 @@ body.page-home {
   padding-right: 10px;
   display: flex;
   flex-flow: column;
+  gap: 56px;
   scrollbar-width: thin;
   scrollbar-color: rgba(4, 17, 31, 0.22) transparent;
 }

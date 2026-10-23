@@ -1,12 +1,51 @@
-// Home page: the project list scrolls like a vertical wheel. The card closest
+// Home / gallery: the card list scrolls like a vertical wheel. The card closest
 // to the centre of the wheel gets `is-center` (full size, full opacity), the
-// rest fade out, so scrolling reads as spinning the wheel.
+// rest fade out. The list is cloned into three copies and the viewport is kept
+// inside the middle one, so the wheel loops endlessly.
 (function () {
   var wheel = document.querySelector('[data-wheel]');
   if (!wheel) return;
 
+  var originals = Array.prototype.slice.call(wheel.children).filter(function (node) {
+    return node.classList && node.classList.contains('framer-card');
+  });
+  if (!originals.length) return;
+
+  var count = originals.length;
+  var setHeight = 0;
+
+  // Two extra copies (before and after) turn the list into a loop. Scrolling
+  // then jumps by exactly one copy, which is invisible because the content is
+  // identical.
+  if (count > 1) {
+    for (var copy = 0; copy < 2; copy++) {
+      var frag = document.createDocumentFragment();
+      originals.forEach(function (node) {
+        frag.appendChild(node.cloneNode(true));
+      });
+      wheel.appendChild(frag);
+    }
+  }
+
   var cards = Array.prototype.slice.call(wheel.querySelectorAll('.framer-card'));
-  if (!cards.length) return;
+
+  function measure() {
+    setHeight =
+      count > 1
+        ? cards[count].getBoundingClientRect().top - cards[0].getBoundingClientRect().top
+        : 0;
+  }
+
+  function start() {
+    if (setHeight > 0) wheel.scrollTop = setHeight;
+  }
+
+  // Keep the viewport inside the middle copy.
+  function normalize() {
+    if (!(setHeight > 0)) return;
+    if (wheel.scrollTop < setHeight) wheel.scrollTop += setHeight;
+    else if (wheel.scrollTop >= setHeight * 2) wheel.scrollTop -= setHeight;
+  }
 
   function pick() {
     var rect = wheel.getBoundingClientRect();
@@ -34,13 +73,27 @@
     if (queued) return;
     queued = true;
     requestAnimationFrame(function () {
-      pick();
       queued = false;
+      normalize();
+      pick();
     });
   }
 
   wheel.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', pick);
-  window.addEventListener('load', pick);
+
+  window.addEventListener('load', function () {
+    measure();
+    normalize();
+    pick();
+  });
+
+  window.addEventListener('resize', function () {
+    measure();
+    start();
+    pick();
+  });
+
+  measure();
+  start();
   pick();
 })();

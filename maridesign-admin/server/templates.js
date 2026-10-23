@@ -248,7 +248,7 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=23">
+<link rel="stylesheet" href="/static/site.css?v=24">
 ${metricaHtml(site)}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
@@ -288,20 +288,20 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
   const contactRows = [];
   if (contacts.email) {
     contactRows.push(
-      `<button type="button" class="footer-contact hero-contact" data-copy="${escapeHtml(
+      `<span class="hero-contact-line"><span class="hero-contact-label">Mail:</span><button type="button" class="footer-contact hero-contact" data-copy="${escapeHtml(
         contacts.email
       )}" data-copy-label="${escapeHtml(copiedLabel)}" title="${escapeHtml(
         locale === 'ru' ? 'Скопировать почту' : 'Copy email'
-      )}"><span class="footer-contact-text">${escapeHtml(contacts.email)}</span></button>`
+      )}"><span class="footer-contact-text">${escapeHtml(contacts.email)}</span></button></span>`
     );
   }
   if (contacts.telegram) {
     contactRows.push(
-      `<button type="button" class="footer-contact hero-contact" data-copy="${escapeHtml(
+      `<span class="hero-contact-line"><span class="hero-contact-label">Telegram:</span><button type="button" class="footer-contact hero-contact" data-copy="${escapeHtml(
         contacts.telegram
       )}" data-copy-label="${escapeHtml(copiedLabel)}" title="${escapeHtml(
         locale === 'ru' ? 'Скопировать телеграм' : 'Copy Telegram'
-      )}"><span class="footer-contact-text">${escapeHtml(contacts.telegram)}</span></button>`
+      )}"><span class="footer-contact-text">${escapeHtml(contacts.telegram)}</span></button></span>`
     );
   }
 
