@@ -1,10 +1,11 @@
 {
   "id": "ab30a06b243b",
-  "slug": "novyy-keys",
+  "kind": "case",
+  "slug": "dizayn-internet-magazina-stalnoe-delo",
   "published": true,
   "order": 4,
   "createdAt": "2026-09-29T02:21:16.971Z",
-  "updatedAt": "2026-10-20T09:08:35.639Z",
+  "updatedAt": "2026-10-23T15:48:33.505Z",
   "title": {
     "ru": "Дизайн интернет магазина \"Стальное дело\"",
     "en": ""

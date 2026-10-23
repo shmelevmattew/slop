@@ -1,10 +1,11 @@
 {
   "id": "796bb6e62ced",
-  "slug": "novyy-keys",
+  "kind": "case",
+  "slug": "dizayn-task-trekera",
   "published": true,
   "order": 1792488332545,
   "createdAt": "2026-10-20T09:25:32.545Z",
-  "updatedAt": "2026-10-20T09:26:08.314Z",
+  "updatedAt": "2026-10-23T15:48:33.505Z",
   "title": {
     "ru": "Дизайн таск-трекера",
     "en": ""

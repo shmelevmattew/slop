@@ -1,10 +1,11 @@
 {
   "id": "4280f72fbd85",
-  "slug": "novyy-keys",
+  "kind": "case",
+  "slug": "dizayn-igry-ko-dnyu-programmista",
   "published": true,
   "order": 1792489224508,
   "createdAt": "2026-10-20T09:40:24.508Z",
-  "updatedAt": "2026-10-20T09:41:24.745Z",
+  "updatedAt": "2026-10-23T15:48:33.506Z",
   "title": {
     "ru": "Дизайн игры ко дню программиста",
     "en": ""

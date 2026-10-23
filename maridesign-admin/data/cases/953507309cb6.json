@@ -1,10 +1,11 @@
 {
   "id": "953507309cb6",
-  "slug": "novyy-keys",
+  "kind": "case",
+  "slug": "korporativnyy-magazin-zakupok",
   "published": true,
   "order": 4,
   "createdAt": "2026-10-20T08:36:40.515Z",
-  "updatedAt": "2026-10-20T08:48:22.689Z",
+  "updatedAt": "2026-10-23T15:48:33.504Z",
   "title": {
     "ru": "Корпоративный магазин закупок",
     "en": ""
