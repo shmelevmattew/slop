@@ -576,10 +576,17 @@ img {
    Structured blocks under the shared hero. Each block is a heading plus its
    list, on the same 1280px column as the rest of the site. */
 
+/* Each resume section is its own card, matching the case / "Разное" cards. */
 .resume-block {
   display: flex;
   flex-flow: column;
   gap: 24px;
+  padding: 24px 28px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: rgba(252, 252, 252, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .resume-block-title {
@@ -960,7 +967,7 @@ body.page-home {
   padding-right: 10px;
   display: flex;
   flex-flow: column;
-  gap: 56px;
+  gap: 24px;
   scrollbar-width: thin;
   scrollbar-color: rgba(4, 17, 31, 0.22) transparent;
 }
@@ -1037,6 +1044,10 @@ body.page-home {
 @media (max-width: 809.98px) {
   .home-stage {
     padding: 108px 20px 40px;
+  }
+
+  .resume-block {
+    padding: 18px 16px;
   }
 }
 

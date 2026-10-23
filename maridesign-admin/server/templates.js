@@ -678,6 +678,8 @@ export function renderResume({ site, locale, pdfReady = false }) {
     locale
   );
 
+  // Only the PDF download stays on this page; the "get in touch" button is
+  // dropped here on purpose.
   const heroButtons = `${
     pdfReady
       ? `<a class="hero-button hero-button-primary" href="${escapeHtml(
@@ -688,16 +690,7 @@ export function renderResume({ site, locale, pdfReady = false }) {
             ? 'Файл резюме ещё не загружен'
             : 'The resume file has not been uploaded yet'
         )}">${escapeHtml(downloadLabel)}</span>`
-  }
-      ${
-        site.hero?.secondaryHref
-          ? `<a class="hero-button hero-button-secondary" href="${escapeHtml(
-              site.hero.secondaryHref
-            )}" target="_blank" rel="noopener">${escapeHtml(
-              pickLocal(site.hero.secondary)
-            )}</a>`
-          : ''
-      }`;
+  }`;
 
   const experience = (data.experience || [])
     .map((job) => {
