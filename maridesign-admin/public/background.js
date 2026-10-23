@@ -23,7 +23,7 @@
     scaleMobile: 1.0,
     backgroundColor: 0xffffff,
     color1: 0xd000ff,
-    speedLimit: 3.0,
+    speedLimit: 1.5,
     separation: 34.0,
     cohesion: 30.0,
     quantity: 4.0,
