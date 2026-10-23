@@ -9,7 +9,7 @@
       "ru": "",
       "en": ""
     },
-    "updatedAt": "2026-10-23T09:48:36.873Z",
+    "updatedAt": "2026-10-20T09:36:30.454Z",
     "items": [
       {
         "id": "5b27a83665b2",
@@ -21,21 +21,7 @@
           "ru": "",
           "en": ""
         },
-        "image": "/uploads/1790648644539-vkc8i4-eLCJSpHDhYvrgIEER7An4yM0rg.png",
-        "link": ""
-      },
-      {
-        "id": "612be423ff91",
-        "title": {
-          "ru": "Игра ко дню программиста",
-          "en": ""
-        },
-        "body": {
-          "ru": "",
-          "en": ""
-        },
-        "image": "/uploads/1790648659509-7dfeqa-4mIHbq3mRvB1FzVn5UZ1XT5wkkk.png",
-        "link": ""
+        "image": "/uploads/1790648644539-vkc8i4-eLCJSpHDhYvrgIEER7An4yM0rg.png"
       },
       {
         "id": "693a2085e533",
@@ -47,21 +33,7 @@
           "ru": "",
           "en": ""
         },
-        "image": "/uploads/1790648673007-vjz5xh-0W4XczgVtTiXPfW4Kzy4vB9mGY-e47828.png",
-        "link": ""
-      },
-      {
-        "id": "dae54c2e9422",
-        "title": {
-          "ru": "Интернет магазин \"Стальное дело\"",
-          "en": ""
-        },
-        "body": {
-          "ru": "",
-          "en": ""
-        },
-        "image": "/uploads/1790648694819-6ku56r-0AmhdvgAMhnOTI3lzl4XudJ4c-18cf25.png",
-        "link": ""
+        "image": "/uploads/1790648673007-vjz5xh-0W4XczgVtTiXPfW4Kzy4vB9mGY-e47828.png"
       },
       {
         "id": "7ae594a2c16f",
@@ -73,8 +45,7 @@
           "ru": "",
           "en": ""
         },
-        "image": "/uploads/1790648739220-lnt2bz-__________.png",
-        "link": ""
+        "image": "/uploads/1790648739220-lnt2bz-__________.png"
       }
     ]
   }

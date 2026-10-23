@@ -1,12 +1,12 @@
 {
   "id": "ab30a06b243b",
   "slug": "novyy-keys",
-  "published": false,
-  "order": 1790648476971,
+  "published": true,
+  "order": 4,
   "createdAt": "2026-09-29T02:21:16.971Z",
-  "updatedAt": "2026-09-29T02:23:08.597Z",
+  "updatedAt": "2026-10-20T09:08:35.639Z",
   "title": {
-    "ru": "Дизайн интернет магазина",
+    "ru": "Дизайн интернет магазина \"Стальное дело\"",
     "en": ""
   },
   "company": "",
@@ -16,7 +16,7 @@
     "en": ""
   },
   "cover": {
-    "ru": "/uploads/1790648500836-fnwt2v-0AmhdvgAMhnOTI3lzl4XudJ4c.png",
+    "ru": "/uploads/1792487304027-iv2g40-Slide_16_9_-_6.png",
     "en": null
   },
   "role": {
@@ -24,7 +24,7 @@
     "en": ""
   },
   "timeline": {
-    "ru": "й месяц",
+    "ru": "",
     "en": ""
   },
   "team": {

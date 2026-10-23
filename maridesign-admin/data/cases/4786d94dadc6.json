@@ -2,11 +2,11 @@
   "id": "4786d94dadc6",
   "slug": "system-control",
   "published": true,
-  "order": 1789552821226,
+  "order": 1,
   "createdAt": "2026-09-16T10:00:21.226Z",
-  "updatedAt": "2026-09-29T02:20:07.899Z",
+  "updatedAt": "2026-10-20T08:48:22.688Z",
   "title": {
-    "ru": "Система контроля состояния паллетного парка",
+    "ru": "Дизайн системы для промышленного предприятия",
     "en": ""
   },
   "company": "MMK",
@@ -16,7 +16,7 @@
     "en": ""
   },
   "cover": {
-    "ru": "/uploads/1790648406780-g8feis-6sXh1sxyqRkwiMS1RINZyfx9GWo.png",
+    "ru": "/uploads/1792484844870-8mvdw8-Slide_16_9_-_3.png",
     "en": null
   },
   "role": {

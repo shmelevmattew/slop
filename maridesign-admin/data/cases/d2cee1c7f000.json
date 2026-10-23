@@ -1,0 +1,68 @@
+{
+  "id": "d2cee1c7f000",
+  "slug": "novyy-keys",
+  "published": true,
+  "order": 1792489432213,
+  "createdAt": "2026-10-20T09:43:52.213Z",
+  "updatedAt": "2026-10-20T09:44:24.228Z",
+  "title": {
+    "ru": "Дизайн мобильного приложения модуля для маркетплейсов \"Dressy\"",
+    "en": ""
+  },
+  "company": "",
+  "year": "2026",
+  "summary": {
+    "ru": "",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/1792489438425-0z3lja-Slide_16_9_-_11.png",
+    "en": null
+  },
+  "role": {
+    "ru": "",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "",
+    "en": ""
+  },
+  "team": {
+    "ru": "",
+    "en": ""
+  },
+  "platform": {
+    "ru": "",
+    "en": ""
+  },
+  "sections": [
+    {
+      "id": "ad1bc5a1c05c",
+      "type": "text",
+      "anchor": "novaya-sektsiya",
+      "title": {
+        "ru": "Новая секция",
+        "en": ""
+      },
+      "body": {
+        "ru": "",
+        "en": ""
+      },
+      "image": null,
+      "images": [],
+      "videoUrl": "",
+      "items": [
+        {
+          "ru": "",
+          "en": ""
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

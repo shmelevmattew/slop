@@ -1,0 +1,68 @@
+{
+  "id": "953507309cb6",
+  "slug": "novyy-keys",
+  "published": true,
+  "order": 4,
+  "createdAt": "2026-10-20T08:36:40.515Z",
+  "updatedAt": "2026-10-20T08:48:22.689Z",
+  "title": {
+    "ru": "Корпоративный магазин закупок",
+    "en": ""
+  },
+  "company": "",
+  "year": "2026",
+  "summary": {
+    "ru": "",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/1792485416626-qj7iyv-Slide_16_9_-_4.png",
+    "en": null
+  },
+  "role": {
+    "ru": "",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "",
+    "en": ""
+  },
+  "team": {
+    "ru": "",
+    "en": ""
+  },
+  "platform": {
+    "ru": "",
+    "en": ""
+  },
+  "sections": [
+    {
+      "id": "e3e2cdc2ca49",
+      "type": "text",
+      "anchor": "novaya-sektsiya",
+      "title": {
+        "ru": "Кейс в разработке",
+        "en": ""
+      },
+      "body": {
+        "ru": "",
+        "en": ""
+      },
+      "image": null,
+      "images": [],
+      "videoUrl": "",
+      "items": [
+        {
+          "ru": "",
+          "en": ""
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}
