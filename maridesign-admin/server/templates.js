@@ -260,7 +260,7 @@ ${body}
 </main>
 <script src="/static/copy-contact.js" defer></script>
 <script src="/static/media.js" defer></script>
-<script src="/static/home.js" defer></script>
+<script src="/static/home.js?v=2" defer></script>
 <script src="/static/avatar.js" defer></script>
 <script src="/static/vendor/three.r134.min.js" defer></script>
 <script src="/static/vendor/vanta.birds.min.js" defer></script>
