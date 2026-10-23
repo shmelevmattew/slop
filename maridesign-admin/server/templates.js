@@ -247,7 +247,7 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=20">
+<link rel="stylesheet" href="/static/site.css?v=21">
 ${metricaHtml(site)}
 </head>
 <body>
@@ -259,6 +259,7 @@ ${body}
 ${footerHtml(site, locale)}
 <script src="/static/copy-contact.js" defer></script>
 <script src="/static/media.js" defer></script>
+<script src="/static/home.js" defer></script>
 <script src="/static/avatar.js" defer></script>
 </body>
 </html>`;
@@ -374,14 +375,16 @@ export function renderHome({ site, cases, locale, draftId = null }) {
     })
     .join('\n');
 
-  const body = `<div class="framer-page">
-  ${heroHtml(site, locale)}
-  <div class="framer-projects">
-    ${
-      cards
-        ? `<div class="projects-grid">${cards}</div>`
-        : `<div class="empty-state">${escapeHtml(t(locale, 'noCases'))}</div>`
-    }
+  const body = `<div class="framer-page framer-page-home">
+  <div class="home-stage">
+    ${heroHtml(site, locale)}
+    <div class="framer-projects home-projects">
+      ${
+        cards
+          ? `<div class="projects-wheel" data-wheel>${cards}</div>`
+          : `<div class="empty-state">${escapeHtml(t(locale, 'noCases'))}</div>`
+      }
+    </div>
   </div>
 </div>`;
 

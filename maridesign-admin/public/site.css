@@ -110,8 +110,8 @@ img {
 .site-header {
   position: fixed;
   top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: max(64px, calc((100% - 1280px) / 2 + 64px));
+  transform: none;
   z-index: 40;
   display: flex;
   align-items: center;
@@ -119,6 +119,14 @@ img {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   background: rgba(218, 218, 230, 0.5);
+}
+
+/* Below 1280px the content column is no longer centred with side margin; the
+   64px gutter shrinks to 40px, so the header follows it. */
+@media (max-width: 1279.98px) {
+  .site-header {
+    left: 40px;
+  }
 }
 
 /* On phones the header and the language pill share one row: the header takes
@@ -519,12 +527,12 @@ img {
 }
 
 .hero-button-secondary {
-  background: var(--color-subtle);
-  color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
 }
 
 .hero-button-secondary:hover {
-  background: #e6e8eb;
+  opacity: 0.88;
 }
 
 /* Shown while the resume PDF has not been uploaded yet: same shape, no action. */
@@ -832,6 +840,140 @@ img {
 /* Three-up grid for the "other projects" strip at the end of a case. */
 .projects-grid-three {
   grid-template-columns: repeat(3, minmax(50px, 1fr));
+}
+
+/* ---------- home: hero + projects wheel ----------
+   The home page is one screen: the hero in the left column, the projects as a
+   vertical "wheel" in the right one. Scrolling brings a card to the centre and
+   the centred card is highlighted (see public/home.js). */
+
+.framer-page-home {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* The pastel wash moves from the hero onto the whole screen so it sits behind
+   both columns. */
+.framer-page-home::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    110% 110% at 90% -14%,
+    rgba(196, 181, 253, 0.95) 0%,
+    rgba(186, 200, 255, 0.82) 20%,
+    rgba(186, 214, 255, 0.52) 36%,
+    rgba(203, 226, 255, 0.24) 52%,
+    rgba(224, 238, 255, 0.08) 66%,
+    rgba(252, 252, 252, 0) 80%
+  );
+  animation: hero-breathe 14s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .framer-page-home::before {
+    animation: none;
+  }
+}
+
+.home-stage {
+  width: 100%;
+  max-width: 1280px;
+  padding: 140px 64px 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.framer-page-home .framer-hero {
+  padding: 0;
+  overflow: visible;
+}
+
+.framer-page-home .framer-hero::before {
+  display: none;
+}
+
+.framer-page-home .hero-inner,
+.framer-page-home .framer-projects {
+  padding: 0;
+}
+
+.home-projects {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.projects-wheel {
+  width: 100%;
+  max-width: 420px;
+  height: min(72vh, 680px);
+  padding-block: calc(min(72vh, 680px) / 2 - 158px);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 24px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  perspective: 1200px;
+}
+
+.projects-wheel::-webkit-scrollbar {
+  display: none;
+}
+
+.projects-wheel .framer-card {
+  flex: 0 0 auto;
+  width: 100%;
+  scroll-snap-align: center;
+  opacity: 0.38;
+  transform: scale(0.86) rotateX(8deg);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  will-change: transform, opacity;
+}
+
+.projects-wheel .framer-card.is-center {
+  opacity: 1;
+  transform: scale(1) rotateX(0deg);
+}
+
+.projects-wheel .framer-card.is-center .card-media {
+  box-shadow: 0 24px 48px -24px rgba(4, 17, 31, 0.5);
+}
+
+@media (max-width: 1279.98px) {
+  .home-stage {
+    padding: 120px 40px 60px;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .home-stage {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .projects-wheel {
+    max-width: none;
+    height: 56vh;
+    padding-block: calc(28vh - 120px);
+  }
+}
+
+@media (max-width: 809.98px) {
+  .home-stage {
+    padding: 108px 20px 40px;
+  }
 }
 
 /* ---------- other projects (bottom of a case) ---------- */

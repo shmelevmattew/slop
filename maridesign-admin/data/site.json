@@ -18,7 +18,7 @@
   "hero": {
     "primary": { "ru": "Последняя работа", "en": "Latest work" },
     "primaryHref": "/case/making-life-easier",
-    "secondary": { "ru": "Обсудить проект", "en": "Discuss a project" },
+    "secondary": { "ru": "Связаться со мной", "en": "Get in touch" },
     "secondaryHref": "https://t.me/marishinybekova"
   },
   "resume": {
