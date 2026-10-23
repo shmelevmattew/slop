@@ -27,7 +27,6 @@ const state = {
   cases: [],
   current: null,
   page: null,
-  site: null,
   lang: 'ru',
   schema: { sectionTypes: [] },
   collapsed: new Set(),
@@ -71,25 +70,6 @@ async function loadSchema() {
 async function loadCases() {
   state.cases = await api('/cases');
   renderCaseList();
-}
-
-async function loadSite() {
-  state.site = await api('/site');
-}
-
-// The home hero button ("Последняя работа") points at one case. The admin picks
-// it here and the choice is stored in site.json as hero.primaryHref.
-async function setLatestWork(slug) {
-  if (!state.site) await loadSite();
-  state.site.hero = state.site.hero || {};
-  state.site.hero.primaryHref = slug ? `/case/${slug}` : '';
-  try {
-    await api('/site', { method: 'PUT', body: JSON.stringify(state.site) });
-    renderEditor();
-    status('Кнопка «Последняя работа» обновлена');
-  } catch (error) {
-    status(error.message, true);
-  }
 }
 
 async function reorderCases(ids) {
@@ -570,25 +550,6 @@ function renderEditor() {
     </div>
 
     <div class="card">
-      <h2 class="card-title">Кнопка «Последняя работа» на главной</h2>
-      <p class="card-hint">Выберите кейс, который открывается по кнопке в главном блоке на главной странице.</p>
-      <div class="field">
-        <label>Кейс</label>
-        <select class="select" id="latest-work-select">
-          <option value="">— не выбрано —</option>
-          ${state.cases
-            .map(
-              (c) =>
-                `<option value="${escapeHtml(c.slug)}" ${
-                  (state.site?.hero?.primaryHref || '') === `/case/${c.slug}` ? 'selected' : ''
-                }>${escapeHtml(c.title.ru || c.slug)}</option>`
-            )
-            .join('')}
-        </select>
-      </div>
-    </div>
-
-    <div class="card">
       <div class="row-between" style="margin-bottom:14px">
         <div>
           <h2 class="card-title">Секции кейса</h2>
@@ -688,7 +649,6 @@ function bindEditorEvents() {
   el('btn-save')?.addEventListener('click', saveCurrent);
   el('btn-delete')?.addEventListener('click', removeCurrent);
   el('btn-add-section')?.addEventListener('click', openSectionPicker);
-  el('latest-work-select')?.addEventListener('change', (e) => setLatestWork(e.target.value));
 
   main.querySelectorAll('[data-collapse]').forEach((btn) =>
     btn.addEventListener('click', () => {
@@ -1275,7 +1235,6 @@ document.addEventListener('keydown', (e) => {
 (async () => {
   try {
     await loadSchema();
-    await loadSite();
     await loadCases();
     if (state.cases.length) await openCase(state.cases[0].id);
   } catch (error) {

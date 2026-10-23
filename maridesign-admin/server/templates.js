@@ -278,7 +278,6 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
   const name = site.siteTitle?.[locale] || site.siteTitle?.ru || '';
   const description =
     site.siteDescription?.[locale] || site.siteDescription?.ru || '';
-  const primary = hero.primary?.[locale] || hero.primary?.ru || '';
   const secondary = hero.secondary?.[locale] || hero.secondary?.ru || '';
 
   // Contacts are repeated at the top of the hero (they also stay in the footer).
@@ -305,15 +304,12 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
     );
   }
 
+  // Only the secondary call to action is shown; the old primary button
+  // ("Последняя работа") was removed at the client's request.
   const buttons =
     buttonOverride !== null
       ? buttonOverride
       : [
-          primary && hero.primaryHref
-            ? `<a class="hero-button hero-button-primary" href="${escapeHtml(
-                url(hero.primaryHref, locale)
-              )}">${escapeHtml(primary)}</a>`
-            : '',
           secondary && hero.secondaryHref
             ? `<a class="hero-button hero-button-secondary" href="${escapeHtml(
                 hero.secondaryHref
@@ -326,14 +322,16 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
   return `<section class="framer-hero">
     <div class="hero-inner">
       <div class="hero-text">
-        ${avatarHtml(site, locale, 'hero-avatar', { interactive: true })}
+        <div class="hero-lead">
+          ${avatarHtml(site, locale, 'hero-avatar', { interactive: true })}
+          ${
+            contactRows.length
+              ? `<div class="hero-contacts">${contactRows.join('\n          ')}</div>`
+              : ''
+          }
+        </div>
         <h1 class="hero-name">${escapeHtml(name)}</h1>
         <p class="hero-description">${escapeHtml(description)}</p>
-        ${
-          contactRows.length
-            ? `<div class="hero-contacts">${contactRows.join('\n          ')}</div>`
-            : ''
-        }
       </div>
       ${buttons ? `<div class="hero-buttons">${buttons}</div>` : ''}
     </div>
