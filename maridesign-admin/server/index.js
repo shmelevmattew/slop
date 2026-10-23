@@ -29,7 +29,7 @@ import {
   newGalleryItem,
 } from './store.js';
 import { normalizeLocale } from './i18n.js';
-import { renderHome, renderCase, renderGallery, renderResume, renderNotFound } from './templates.js';
+import { renderHome, renderCase, renderResume, renderNotFound } from './templates.js';
 import {
   loadAdminConfig,
   isAuthenticated,
@@ -201,7 +201,7 @@ async function handleApi(req, res, url) {
 
   if (route === 'cases' && req.method === 'POST') {
     const body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
-    const created = saveCase({ ...newCase(body.title?.ru || 'Новый кейс'), ...body });
+    const created = saveCase({ ...newCase(body.title?.ru || 'Новый кейс', body.kind), ...body });
     sendJson(res, 201, created);
     return;
   }
@@ -272,17 +272,36 @@ function handlePublic(req, res, url, locale) {
   }
 
   if (pathname === '/' || pathname === '') {
-    const cases = includeDrafts ? readCases() : publishedCases();
-    send(res, 200, renderHome({ site, cases, locale: effectiveLocale, draftId }), {
-      'Content-Type': 'text/html; charset=utf-8',
-    });
+    const cases = includeDrafts ? readCases('case') : publishedCases('case');
+    send(
+      res,
+      200,
+      renderHome({ site, cases, locale: effectiveLocale, draftId, kind: 'case' }),
+      { 'Content-Type': 'text/html; charset=utf-8' }
+    );
     return;
   }
 
-  if (pathname.startsWith('/case/')) {
-    const slug = pathname.slice('/case/'.length).replace(/\/+$/, '');
+  // "Разное" is a second collection of the same kind of item, so it reuses the
+  // home-page listing layout and gets its own detail pages under /other/<slug>.
+  if (pathname === '/other' || pathname === '/other/') {
+    const cases = includeDrafts ? readCases('other') : publishedCases('other');
+    send(
+      res,
+      200,
+      renderHome({ site, cases, locale: effectiveLocale, draftId, kind: 'other' }),
+      { 'Content-Type': 'text/html; charset=utf-8' }
+    );
+    return;
+  }
+
+  if (pathname.startsWith('/case/') || pathname.startsWith('/other/')) {
+    const isOther = pathname.startsWith('/other/');
+    const kind = isOther ? 'other' : 'case';
+    const base = isOther ? '/other/' : '/case/';
+    const slug = pathname.slice(base.length).replace(/\/+$/, '');
     const all = includeDrafts ? readCases() : publishedCases();
-    const entry = all.find((c) => c.slug === slug);
+    const entry = all.find((c) => c.slug === slug && c.kind === kind);
     if (!entry) {
       send(res, 404, renderNotFound({ site, locale: effectiveLocale }), {
         'Content-Type': 'text/html; charset=utf-8',
@@ -299,6 +318,7 @@ function handlePublic(req, res, url, locale) {
         allCases: all,
         draft: includeDrafts && !entry.published,
         adminLink: ADMIN_BASE,
+        kind,
       }),
       { 'Content-Type': 'text/html; charset=utf-8' }
     );
@@ -319,18 +339,6 @@ function handlePublic(req, res, url, locale) {
     if (!target.startsWith(PUBLIC_DIR)) return send(res, 403, 'Forbidden');
     sendFile(res, target, { cache: true });
     return;
-  }
-
-  // Gallery pages ("Разное") keep the home hero and footer, only the grid
-  // between them changes, so `renderGallery` sits between the two layouts.
-  if (pathname === '/other' || pathname === '/other/') {
-    const page = readPage('other');
-    if (page) {
-      send(res, 200, renderGallery({ site, page, locale: effectiveLocale }), {
-        'Content-Type': 'text/html; charset=utf-8',
-      });
-      return;
-    }
   }
 
   // Resume shares the home hero and footer too, with a different body and a

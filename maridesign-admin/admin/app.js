@@ -26,9 +26,8 @@ const api = async (path, options = {}) => {
 const state = {
   cases: [],
   current: null,
-  page: null,
-  otherId: null,
   lang: 'ru',
+  tab: 'cases',
   schema: { sectionTypes: [] },
   collapsed: new Set(),
   dirty: false,
@@ -60,6 +59,17 @@ function filled(value) {
 
 function typeLabel(typeId) {
   return state.schema.sectionTypes.find((t) => t.id === typeId)?.label?.ru || typeId;
+}
+
+// Two collections share the editor: the projects ("case") and "Разное"
+// ("other"). The active tab decides which one the sidebar lists.
+function tabKind() {
+  return state.tab === 'other' ? 'other' : 'case';
+}
+
+function visibleCases() {
+  const kind = tabKind();
+  return state.cases.filter((c) => c.kind === kind);
 }
 
 // ---------- data ----------
@@ -94,13 +104,15 @@ async function openCase(id) {
 }
 
 async function createCase() {
+  const kind = tabKind();
+  const title = kind === 'other' ? 'Новый раздел' : 'Новый кейс';
   const created = await api('/cases', {
     method: 'POST',
-    body: JSON.stringify({ title: { ru: 'Новый кейс', en: '' } }),
+    body: JSON.stringify({ title: { ru: title, en: '' }, kind }),
   });
   await loadCases();
   await openCase(created.id);
-  status('Кейс создан');
+  status(kind === 'other' ? 'Раздел создан' : 'Кейс создан');
 }
 
 async function saveCurrent() {
@@ -154,11 +166,14 @@ async function uploadFile(file) {
 
 function renderCaseList() {
   const list = el('case-list');
-  if (!state.cases.length) {
-    list.innerHTML = '<p style="color:var(--muted);font-size:13px">Пока нет кейсов</p>';
+  const items = visibleCases();
+  if (!items.length) {
+    list.innerHTML = `<p style="color:var(--muted);font-size:13px">${
+      state.tab === 'other' ? 'Пока ничего нет' : 'Пока нет кейсов'
+    }</p>`;
     return;
   }
-  list.innerHTML = state.cases
+  list.innerHTML = items
     .map((entry, index) => {
       const active = state.current?.id === entry.id ? ' active' : '';
       const cover = entry.cover?.ru || entry.cover?.en || '';
@@ -179,7 +194,7 @@ function renderCaseList() {
         index === 0 ? 'disabled' : ''
       } title="Выше">↑</button>
         <button class="icon-btn" data-case-down="${entry.id}" ${
-        index === state.cases.length - 1 ? 'disabled' : ''
+        index === items.length - 1 ? 'disabled' : ''
       } title="Ниже">↓</button>
       </div>
       <span class="dot ${entry.published ? 'dot-published' : 'dot-draft'}" title="${
@@ -207,11 +222,14 @@ function renderCaseList() {
 }
 
 function moveCase(id, delta) {
+  const items = visibleCases();
+  const at = items.findIndex((c) => c.id === id);
+  const neighbour = items[at + delta];
+  if (at < 0 || !neighbour) return;
   const cases = state.cases;
-  const index = cases.findIndex((c) => c.id === id);
-  const target = index + delta;
-  if (index < 0 || target < 0 || target >= cases.length) return;
-  [cases[index], cases[target]] = [cases[target], cases[index]];
+  const a = cases.findIndex((c) => c.id === id);
+  const b = cases.findIndex((c) => c.id === neighbour.id);
+  [cases[a], cases[b]] = [cases[b], cases[a]];
   renderCaseList();
   reorderCases(cases.map((c) => c.id));
 }
@@ -477,7 +495,9 @@ function renderEditor() {
             <span class="chip ${current.published ? 'chip-published' : 'chip-draft'}">${
               current.published ? 'Опубликован' : 'Черновик'
             }</span>
-            <span class="chip" style="margin-left:6px">/case/${escapeHtml(current.slug)}</span>
+            <span class="chip" style="margin-left:6px">${
+              current.kind === 'other' ? '/other/' : '/case/'
+            }${escapeHtml(current.slug)}</span>
             <span class="chip" style="margin-left:6px">EN: ${enFilled ? 'заполнен' : 'не заполнен'}</span>
           </p>
         </div>
@@ -553,7 +573,9 @@ function renderEditor() {
     <div class="card">
       <div class="row-between" style="margin-bottom:14px">
         <div>
-          <h2 class="card-title">Секции кейса</h2>
+          <h2 class="card-title">${
+            current.kind === 'other' ? 'Секции раздела' : 'Секции кейса'
+          }</h2>
           <p class="card-hint" style="margin:0">Порядок секций — это порядок блоков на странице.</p>
         </div>
         <button class="btn btn-primary btn-sm" id="btn-add-section">Добавить секцию</button>
@@ -910,366 +932,29 @@ function openSectionPicker() {
   );
 }
 
-// ---------- gallery page editor ("Разное") ----------
-// Two panes like the case editor: the cards sit in the sidebar and the one
-// selected there is edited in the main pane. `state.otherId` holds the selected
-// card; writes go to `state.page`.
-
-async function loadOtherPage() {
-  state.page = await api('/pages/other');
-  const items = state.page?.items || [];
-  state.otherId = items[0]?.id || null;
-  renderOtherList();
-  renderOtherEditor();
-}
-
-async function saveOtherPage() {
-  try {
-    state.page = await api('/pages/other', {
-      method: 'PUT',
-      body: JSON.stringify(state.page),
-    });
-    state.dirty = false;
-    status('Сохранено');
-  } catch (error) {
-    status(error.message, true);
-  }
-}
-
-function renderOtherList() {
-  const list = el('other-list');
-  const items = state.page?.items || [];
-  if (!items.length) {
-    list.innerHTML = '<p style="color:var(--muted);font-size:13px">Пока нет карточек</p>';
-    return;
-  }
-  list.innerHTML = items
-    .map((item, index) => {
-      const active = state.otherId === item.id ? ' active' : '';
-      const image = item.image || '';
-      return `<div class="case-item${active}" data-other-id="${item.id}" draggable="true">
-      <span class="case-item-handle" title="Перетащите, чтобы изменить порядок">⠿</span>
-      <div class="case-item-thumb">${
-        image ? `<img src="${escapeHtml(image)}" alt="">` : ''
-      }</div>
-      <div class="case-item-meta">
-        <div class="case-item-title">${escapeHtml(item.title?.ru || '(без названия)')}</div>
-        <div class="case-item-sub">${item.link ? 'ведёт в кейс' : 'без ссылки'}</div>
-      </div>
-      <div class="case-item-actions">
-        <button class="icon-btn" data-other-up="${item.id}" ${
-        index === 0 ? 'disabled' : ''
-      } title="Выше">↑</button>
-        <button class="icon-btn" data-other-down="${item.id}" ${
-        index === items.length - 1 ? 'disabled' : ''
-      } title="Ниже">↓</button>
-      </div>
-    </div>`;
-    })
-    .join('');
-
-  list.querySelectorAll('[data-other-id]').forEach((node) => {
-    node.addEventListener('click', (e) => {
-      if (e.target.closest('button')) return;
-      state.otherId = node.dataset.otherId;
-      renderOtherList();
-      renderOtherEditor();
-    });
-  });
-
-  list.querySelectorAll('[data-other-up]').forEach((btn) =>
-    btn.addEventListener('click', () => moveOtherItem(btn.dataset.otherUp, -1))
-  );
-  list.querySelectorAll('[data-other-down]').forEach((btn) =>
-    btn.addEventListener('click', () => moveOtherItem(btn.dataset.otherDown, 1))
-  );
-
-  bindOtherDrag();
-}
-
-function renderOtherEditor() {
-  const main = el('main-other');
-  const page = state.page;
-  if (!page) {
-    main.innerHTML = '<div class="empty">Не удалось загрузить страницу.</div>';
-    return;
-  }
-
-  const items = page.items || [];
-  let index = items.findIndex((i) => i.id === state.otherId);
-  if (index === -1 && items.length) {
-    index = 0;
-    state.otherId = items[0].id;
-  }
-
-  main.innerHTML = `
-    <div class="card">
-      <div class="row-between" style="margin-bottom:14px">
-        <div>
-          <h2 class="card-title">Страница «Разное»</h2>
-          <p class="card-hint" style="margin:0">
-            Шапка с фото, именем, контактами и кнопкой берётся с главной автоматически.
-          </p>
-        </div>
-        <div class="row">
-          <button class="btn" id="btn-other-view">Посмотреть страницу</button>
-          <button class="btn btn-primary" id="btn-other-save">Сохранить</button>
-        </div>
-      </div>
-      ${langTabs()}
-
-      ${localizedInput({
-        label: 'Заголовок раздела (в шапке страницы)',
-        value: page.title,
-        path: 'title',
-        placeholder: 'Разное',
-      })}
-
-      ${localizedInput({
-        label: 'Описание под заголовком',
-        value: page.intro,
-        path: 'intro',
-        multiline: true,
-        rows: 2,
-        placeholder: 'Необязательно',
-      })}
-    </div>
-
-    ${
-      index >= 0
-        ? otherCardEditor(items[index], index)
-        : '<div class="card"><div class="empty">Выберите карточку слева или добавьте новую.</div></div>'
-    }
-  `;
-
-  bindOtherEvents();
-}
-
-function otherCardEditor(item, index) {
-  const caseLink = typeof item.link === 'string' && item.link.indexOf('/case/') === 0;
-  const caseSlug = caseLink ? item.link.slice('/case/'.length) : '';
-  return `<div class="card">
-    <div class="row-between" style="margin-bottom:14px">
-      <div>
-        <h2 class="card-title">Карточка ${index + 1}</h2>
-        <p class="card-hint" style="margin:0">Порядок карточек — это порядок на странице.</p>
-      </div>
-      <button class="btn btn-danger btn-sm" data-other-del="${item.id}">Удалить карточку</button>
-    </div>
-    ${langTabs()}
-    ${imagePicker({
-      label: 'Картинка',
-      value: { [state.lang]: item.image, ru: item.image, en: null },
-      path: `items.${index}.image`,
-      hint: 'Лучше 4:3, например 1600×1200',
-    })}
-    ${localizedInput({
-      label: 'Заголовок',
-      value: item.title,
-      path: `items.${index}.title`,
-      placeholder: 'Например: Эксперименты с типографикой',
-    })}
-    ${localizedInput({
-      label: 'Подпись под картинкой',
-      value: item.body,
-      path: `items.${index}.body`,
-      multiline: true,
-      rows: 2,
-      placeholder: 'Необязательно',
-    })}
-    <div class="field">
-      <label>Куда ведёт карточка (по клику на сайте)</label>
-      <select class="select" data-other-case="${item.id}">
-        <option value="">— никуда —</option>
-        ${(state.cases || [])
-          .map(
-            (c) =>
-              `<option value="/case/${escapeHtml(c.slug)}" ${
-                item.link === `/case/${c.slug}` ? 'selected' : ''
-              }>Кейс: ${escapeHtml(c.title.ru || c.slug)}</option>`
-          )
-          .join('')}
-      </select>
-      <input class="input" style="margin-top:8px" data-path="items.${index}.link" value="${escapeHtml(
-        item.link || ''
-      )}" placeholder="Или своя ссылка, например https://...">
-      ${
-        caseLink
-          ? `<button class="btn btn-sm" style="margin-top:10px" data-open-case="${escapeHtml(
-              caseSlug
-            )}">Открыть кейс в редакторе</button>`
-          : ''
-      }
-    </div>
-  </div>`;
-}
-
-function bindOtherEvents() {
-  const main = el('main-other');
-
-  // Shared text inputs: route writes to state.page for the gallery editor.
-  main.querySelectorAll('[data-path]').forEach((input) => {
-    const isCheckbox = input.type === 'checkbox';
-    input.addEventListener('input', () => {
-      const raw = isCheckbox ? input.checked : input.value;
-      setByPath(state.page, input.dataset.path, raw);
-      state.dirty = true;
-    });
-  });
-
-  // The "leads to" select and the free-text field both write items.<n>.link.
-  main.querySelectorAll('[data-other-case]').forEach((select) =>
-    select.addEventListener('change', () => {
-      const item = state.page.items.find((i) => i.id === select.dataset.otherCase);
-      if (!item) return;
-      item.link = select.value || '';
-      state.dirty = true;
-      renderOtherList();
-      renderOtherEditor();
-      status(select.value ? 'Ссылка на кейс задана' : 'Ссылка убрана');
-    })
-  );
-
-  // Jump into the linked case's editor.
-  main.querySelectorAll('[data-open-case]').forEach((btn) =>
-    btn.addEventListener('click', async () => {
-      const found = (state.cases || []).find((c) => c.slug === btn.dataset.openCase);
-      if (!found) return status('Кейс не найден', true);
-      switchTab('cases');
-      await openCase(found.id);
-    })
-  );
-
-  main.querySelectorAll('[data-other-del]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      if (!confirm('Удалить карточку?')) return;
-      state.page.items = state.page.items.filter((i) => i.id !== btn.dataset.otherDel);
-      if (state.otherId === btn.dataset.otherDel) {
-        state.otherId = state.page.items[0]?.id || null;
-      }
-      state.dirty = true;
-      renderOtherList();
-      renderOtherEditor();
-      status('Карточка удалена');
-    })
-  );
-
-  main.querySelectorAll('[data-pick]').forEach((btn) =>
-    btn.addEventListener('click', () =>
-      pickFiles(async (urls) => setOtherImage(btn.dataset.pick, urls[0]), false)
-    )
-  );
-
-  main.querySelectorAll('[data-clear]').forEach((btn) =>
-    btn.addEventListener('click', () => setOtherImage(btn.dataset.clear, null))
-  );
-
-  main.querySelectorAll('[data-drop]').forEach((zone) => {
-    zone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      zone.classList.add('dragover');
-    });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', async (e) => {
-      e.preventDefault();
-      zone.classList.remove('dragover');
-      const file = e.dataTransfer.files?.[0];
-      if (!file) return;
-      try {
-        const url = await uploadFile(file);
-        setOtherImage(zone.dataset.drop, url);
-      } catch (error) {
-        status(error.message, true);
-      }
-    });
-    zone.addEventListener('click', () =>
-      pickFiles(async (urls) => setOtherImage(zone.dataset.drop, urls[0]), false)
-    );
-  });
-
-  el('btn-other-save').addEventListener('click', () => saveOtherPage());
-  el('btn-other-view').addEventListener('click', () =>
-    window.open(`/other?lang=${state.lang}`, '_blank')
-  );
-}
-
-function setOtherImage(path, url) {
-  setByPath(state.page, path, url || null);
-  state.dirty = true;
-  renderOtherList();
-  renderOtherEditor();
-  status(url ? 'Картинка загружена' : 'Картинка убрана');
-}
-
-function moveOtherItem(id, delta) {
-  const items = state.page.items;
-  const index = items.findIndex((i) => i.id === id);
-  const target = index + delta;
-  if (index < 0 || target < 0 || target >= items.length) return;
-  [items[index], items[target]] = [items[target], items[index]];
-  state.dirty = true;
-  renderOtherList();
-  renderOtherEditor();
-}
-
-function bindOtherDrag() {
-  const list = el('other-list');
-  let draggedId = null;
-
-  list.querySelectorAll('[data-other-id]').forEach((node) => {
-    node.addEventListener('dragstart', (e) => {
-      draggedId = node.dataset.otherId;
-      node.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    node.addEventListener('dragend', () => {
-      node.classList.remove('dragging');
-      draggedId = null;
-    });
-    node.addEventListener('dragover', (e) => {
-      if (!draggedId || draggedId === node.dataset.otherId) return;
-      e.preventDefault();
-      node.classList.add('drag-over');
-    });
-    node.addEventListener('dragleave', () => node.classList.remove('drag-over'));
-    node.addEventListener('drop', (e) => {
-      e.preventDefault();
-      node.classList.remove('drag-over');
-      const targetId = node.dataset.otherId;
-      if (!draggedId || draggedId === targetId) return;
-      const items = state.page.items;
-      const from = items.findIndex((i) => i.id === draggedId);
-      const to = items.findIndex((i) => i.id === targetId);
-      if (from < 0 || to < 0) return;
-      const [moved] = items.splice(from, 1);
-      items.splice(to, 0, moved);
-      draggedId = null;
-      state.dirty = true;
-      renderOtherList();
-      renderOtherEditor();
-    });
-  });
-}
-
 // ---------- tabs ----------
 
-function switchTab(tab) {
-  el('layout-cases').classList.toggle('hidden', tab !== 'cases');
-  el('layout-other').classList.toggle('hidden', tab !== 'other');
+async function switchTab(tab) {
+  state.tab = tab === 'other' ? 'other' : 'cases';
   document.querySelectorAll('.topbar-tab').forEach((btn) =>
-    btn.classList.toggle('active', btn.dataset.tab === tab)
+    btn.classList.toggle('active', btn.dataset.tab === state.tab)
   );
-  // The case-only buttons make no sense while editing the gallery page.
-  const caseControls = ['btn-new', 'btn-view-case'];
-  caseControls.forEach((id) => {
-    const node = el(id);
-    if (node) node.classList.toggle('hidden', tab !== 'cases');
-  });
-  if (tab === 'other' && !state.page) loadOtherPage().catch((e) => status(e.message, true));
+
+  const title = el('list-title');
+  if (title) title.textContent = state.tab === 'other' ? 'Все разделы' : 'Все кейсы';
+  el('btn-new').textContent = state.tab === 'other' ? 'Новый раздел' : 'Новый кейс';
+
+  state.current = null;
+  renderCaseList();
+  const items = visibleCases();
+  if (items.length) await openCase(items[0].id);
+  else renderEditor();
 }
 
 document.querySelectorAll('.topbar-tab').forEach((btn) =>
-  btn.addEventListener('click', () => switchTab(btn.dataset.tab))
+  btn.addEventListener('click', () =>
+    switchTab(btn.dataset.tab).catch((e) => status(e.message, true))
+  )
 );
 
 // ---------- wire up ----------
@@ -1277,23 +962,10 @@ document.querySelectorAll('.topbar-tab').forEach((btn) =>
 el('btn-new').addEventListener('click', () => createCase().catch((e) => status(e.message, true)));
 el('btn-view-case').addEventListener('click', () => {
   if (!state.current) return;
-  window.open(`/case/${state.current.slug}?lang=${state.lang}&draft=${state.current.id}`, '_blank');
+  const base = state.current.kind === 'other' ? '/other' : '/case';
+  window.open(`${base}/${state.current.slug}?lang=${state.lang}&draft=${state.current.id}`, '_blank');
 });
 el('btn-view-site').addEventListener('click', () => window.open(`/?lang=${state.lang}`, '_blank'));
-el('btn-other-add').addEventListener('click', async () => {
-  try {
-    if (!state.page) await loadOtherPage();
-    const item = await api('/pages/preview', { method: 'POST' });
-    state.page.items.push(item);
-    state.otherId = item.id;
-    state.dirty = true;
-    renderOtherList();
-    renderOtherEditor();
-    status('Карточка добавлена');
-  } catch (error) {
-    status(error.message, true);
-  }
-});
 
 window.addEventListener('beforeunload', (e) => {
   if (state.dirty) {
@@ -1305,8 +977,7 @@ window.addEventListener('beforeunload', (e) => {
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault();
-    if (!el('layout-other').classList.contains('hidden')) saveOtherPage();
-    else saveCurrent();
+    saveCurrent();
   }
 });
 
@@ -1314,7 +985,7 @@ document.addEventListener('keydown', (e) => {
   try {
     await loadSchema();
     await loadCases();
-    if (state.cases.length) await openCase(state.cases[0].id);
+    await switchTab('cases');
   } catch (error) {
     status(error.message, true);
   }

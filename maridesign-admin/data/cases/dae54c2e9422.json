@@ -1,0 +1,46 @@
+{
+  "id": "dae54c2e9422",
+  "kind": "other",
+  "slug": "internet-magazin-stalnoe-delo",
+  "published": true,
+  "order": 3,
+  "createdAt": "2026-10-23T09:55:08.798Z",
+  "updatedAt": "2026-10-23T09:55:08.799Z",
+  "title": {
+    "ru": "Интернет магазин \"Стальное дело\"",
+    "en": ""
+  },
+  "company": "",
+  "year": "2026",
+  "summary": {
+    "ru": "",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/1790648694819-6ku56r-0AmhdvgAMhnOTI3lzl4XudJ4c-18cf25.png",
+    "en": null
+  },
+  "role": {
+    "ru": "",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "",
+    "en": ""
+  },
+  "team": {
+    "ru": "",
+    "en": ""
+  },
+  "platform": {
+    "ru": "",
+    "en": ""
+  },
+  "sections": [],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "7ae594a2c16f",
+  "kind": "other",
+  "slug": "oformlenie-sots-setey",
+  "published": true,
+  "order": 4,
+  "createdAt": "2026-10-23T09:55:08.802Z",
+  "updatedAt": "2026-10-23T09:55:08.802Z",
+  "title": {
+    "ru": "Оформление соц-сетей",
+    "en": ""
+  },
+  "company": "",
+  "year": "2026",
+  "summary": {
+    "ru": "",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/1790648739220-lnt2bz-__________.png",
+    "en": null
+  },
+  "role": {
+    "ru": "",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "",
+    "en": ""
+  },
+  "team": {
+    "ru": "",
+    "en": ""
+  },
+  "platform": {
+    "ru": "",
+    "en": ""
+  },
+  "sections": [],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

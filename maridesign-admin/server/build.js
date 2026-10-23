@@ -69,7 +69,8 @@ function main() {
   initStorage();
 
   const site = readJson(SITE_FILE, {});
-  const cases = publishedCases();
+  const cases = publishedCases('case');
+  const others = publishedCases('other');
 
   if (fs.existsSync(DIST)) fs.rmSync(DIST, { recursive: true, force: true });
 
@@ -78,7 +79,15 @@ function main() {
     // Home lives at dist/ for the default locale and dist/en/ for the other,
     // which keeps the URLs clean on a static host.
     const homeFile = locale === 'ru' ? path.join(DIST, 'index.html') : path.join(DIST, locale, 'index.html');
-    write(homeFile, renderHome({ site, cases, locale }));
+    write(homeFile, renderHome({ site, cases, locale, kind: 'case' }));
+    pages++;
+
+    // "Разное" is a second listing with its own detail pages under /other.
+    const otherFile =
+      locale === 'ru'
+        ? path.join(DIST, 'other', 'index.html')
+        : path.join(DIST, locale, 'other', 'index.html');
+    write(otherFile, renderHome({ site, cases: others, locale, kind: 'other' }));
     pages++;
 
     for (const entry of cases) {
@@ -88,14 +97,26 @@ function main() {
           : path.join(DIST, locale, 'case', entry.slug, 'index.html');
       write(
         file,
-        renderCase({ site, entry, locale, allCases: cases })
+        renderCase({ site, entry, locale, allCases: cases, kind: 'case' })
+      );
+      pages++;
+    }
+
+    for (const entry of others) {
+      const file =
+        locale === 'ru'
+          ? path.join(DIST, 'other', entry.slug, 'index.html')
+          : path.join(DIST, locale, 'other', entry.slug, 'index.html');
+      write(
+        file,
+        renderCase({ site, entry, locale, allCases: others, kind: 'other' })
       );
       pages++;
     }
   }
 
   write(path.join(DIST, '404.html'), renderNotFound({ site, locale: 'ru' }));
-  const uploads = copyStatic(cases);
+  const uploads = copyStatic([...cases, ...others]);
 
   console.log('');
   console.log(`  Собрано страниц: ${pages} (${LOCALES.join(', ')})`);

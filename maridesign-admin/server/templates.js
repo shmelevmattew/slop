@@ -341,11 +341,15 @@ function heroHtml(site, locale, { buttons: buttonOverride = null } = {}) {
   </section>`;
 }
 
-export function renderHome({ site, cases, locale, draftId = null }) {
-  const title = t(locale, 'projects');
+export function renderHome({ site, cases, locale, draftId = null, kind = 'case' }) {
+  // The same listing layout serves the projects (kind "case") and "Разное"
+  // (kind "other"); only the heading and the card links differ.
+  const isOther = kind === 'other';
+  const title = isOther ? t(locale, 'other') : t(locale, 'projects');
+  const basePath = isOther ? '/other' : '/case';
   const cards = cases
     .map((entry) => {
-      const href = url(`/case/${entry.slug}`, locale, {
+      const href = url(`${basePath}/${entry.slug}`, locale, {
         draft: draftId === entry.id ? draftId : '',
       });
       const cover = coverImage(entry.cover, locale);
@@ -394,14 +398,16 @@ export function renderHome({ site, cases, locale, draftId = null }) {
     site,
     locale,
     title: `${title} — ${site.siteTitle?.[locale] || ''}`,
-    path: '/',
-    activeId: 'projects',
+    path: isOther ? '/other' : '/',
+    activeId: isOther ? 'other' : 'projects',
     body,
     bodyClass: 'page-home',
   });
 }
 
-export function renderCase({ site, entry, locale, allCases, draft = false, adminLink = '' }) {
+export function renderCase({ site, entry, locale, allCases, draft = false, adminLink = '', kind = 'case' }) {
+  const isOther = kind === 'other';
+  const basePath = isOther ? '/other' : '/case';
   const titleText = String(pick(entry.title, locale));
   const summary = String(pick(entry.summary, locale));
   const cover = coverImage(entry.cover, locale);
@@ -419,10 +425,10 @@ export function renderCase({ site, entry, locale, allCases, draft = false, admin
   const aboutAnchor = { id: 'about-project', label: t(locale, 'aboutProject') };
   const headerSections = [aboutAnchor, ...anchors];
 
-  const others = allCases.filter((c) => c.id !== entry.id).slice(0, 4);
+  const others = allCases.filter((c) => c.id !== entry.id && c.kind === kind).slice(0, 4);
   const otherCards = others
     .map((other) => {
-      const href = url(`/case/${other.slug}`, locale);
+      const href = url(`${basePath}/${other.slug}`, locale);
       const otherTitle = String(pick(other.title, locale));
       const otherCover = coverImage(other.cover, locale);
       const media = otherCover
@@ -479,7 +485,9 @@ export function renderCase({ site, entry, locale, allCases, draft = false, admin
     otherCards
       ? `<section class="other-projects">
     <div class="other-projects-inner">
-      <h2 class="other-projects-title">${escapeHtml(t(locale, 'otherProjects'))}</h2>
+      <h2 class="other-projects-title">${escapeHtml(
+        isOther ? t(locale, 'other') : t(locale, 'otherProjects')
+      )}</h2>
       <div class="projects-grid projects-grid-three">${otherCards}</div>
     </div>
   </section>`
@@ -493,14 +501,14 @@ export function renderCase({ site, entry, locale, allCases, draft = false, admin
     locale,
     title: `${titleText} — ${site.siteTitle?.[locale] || ''}`,
     description: summary,
-    path: `/case/${entry.slug}`,
-    activeId: 'projects',
+    path: `${basePath}/${entry.slug}`,
+    activeId: isOther ? 'other' : 'projects',
     body,
     draft,
     adminLink,
     headerMode: 'case',
-    backHref: url('/', locale, { draft: '1' }).replace(/\?draft=1$/, ''),
-    backLabel: t(locale, 'backToProjects'),
+    backHref: url(isOther ? '/other' : '/', locale, { draft: '1' }).replace(/\?draft=1$/, ''),
+    backLabel: isOther ? t(locale, 'other') : t(locale, 'backToProjects'),
     headerSections,
   });
 }

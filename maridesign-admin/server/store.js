@@ -138,10 +138,11 @@ export function newSection(type = 'text') {
   };
 }
 
-export function newCase(title = 'Новый кейс') {
+export function newCase(title = 'Новый кейс', kind = 'case') {
   const now = new Date().toISOString();
   return {
     id: newId(),
+    kind: kind === 'other' ? 'other' : 'case',
     slug: slugify(title),
     published: false,
     order: Date.now(),
@@ -193,6 +194,10 @@ export function normalizeCase(raw) {
   merged.team = localize(merged.team);
   merged.platform = localize(merged.platform);
   merged.cover = localizeImage(merged.cover);
+
+  // Two collections live in the same folder: the projects ("case") and the
+  // "Разное" items ("other"). Each behaves like a case and has its own page.
+  merged.kind = merged.kind === 'other' ? 'other' : 'case';
 
   const usedAnchors = new Set();
   merged.sections = (Array.isArray(merged.sections) ? merged.sections : []).map((section) => {
@@ -309,13 +314,14 @@ export function caseFile(id) {
   return path.join(CASES_DIR, `${id}.json`);
 }
 
-export function readCases() {
+export function readCases(kind = null) {
   ensureDir(CASES_DIR);
-  return fs
+  const all = fs
     .readdirSync(CASES_DIR)
     .filter((f) => f.endsWith('.json'))
     .map((f) => normalizeCase(readJson(path.join(CASES_DIR, f))))
     .sort((a, b) => a.order - b.order);
+  return kind ? all.filter((c) => c.kind === kind) : all;
 }
 
 export function readCase(id) {
@@ -340,8 +346,8 @@ export function deleteCase(id) {
   return false;
 }
 
-export function publishedCases() {
-  return readCases().filter((c) => c.published);
+export function publishedCases(kind = null) {
+  return readCases(kind).filter((c) => c.published);
 }
 
 // Persists a new manual order for the case list. `ids` is the full list in the

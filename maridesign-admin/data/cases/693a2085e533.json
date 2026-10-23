@@ -1,0 +1,46 @@
+{
+  "id": "693a2085e533",
+  "kind": "other",
+  "slug": "poligrafiya-dlya-glempinga",
+  "published": true,
+  "order": 2,
+  "createdAt": "2026-10-23T09:55:08.795Z",
+  "updatedAt": "2026-10-23T09:55:08.796Z",
+  "title": {
+    "ru": "Полиграфия для глэмпинга",
+    "en": ""
+  },
+  "company": "",
+  "year": "2026",
+  "summary": {
+    "ru": "",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/1790648673007-vjz5xh-0W4XczgVtTiXPfW4Kzy4vB9mGY-e47828.png",
+    "en": null
+  },
+  "role": {
+    "ru": "",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "",
+    "en": ""
+  },
+  "team": {
+    "ru": "",
+    "en": ""
+  },
+  "platform": {
+    "ru": "",
+    "en": ""
+  },
+  "sections": [],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}

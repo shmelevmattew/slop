@@ -1,0 +1,46 @@
+{
+  "id": "5b27a83665b2",
+  "kind": "other",
+  "slug": "dizayn-oblozhek-dlya-knig",
+  "published": true,
+  "order": 0,
+  "createdAt": "2026-10-23T09:55:08.783Z",
+  "updatedAt": "2026-10-23T09:55:08.783Z",
+  "title": {
+    "ru": "Дизайн обложек для книг",
+    "en": ""
+  },
+  "company": "",
+  "year": "2026",
+  "summary": {
+    "ru": "",
+    "en": ""
+  },
+  "cover": {
+    "ru": "/uploads/1790648644539-vkc8i4-eLCJSpHDhYvrgIEER7An4yM0rg.png",
+    "en": null
+  },
+  "role": {
+    "ru": "",
+    "en": ""
+  },
+  "timeline": {
+    "ru": "",
+    "en": ""
+  },
+  "team": {
+    "ru": "",
+    "en": ""
+  },
+  "platform": {
+    "ru": "",
+    "en": ""
+  },
+  "sections": [],
+  "seo": {
+    "titleRu": "",
+    "titleEn": "",
+    "descriptionRu": "",
+    "descriptionEn": ""
+  }
+}
