@@ -573,7 +573,8 @@ img {
   display: flex;
   flex-flow: column;
   align-items: stretch;
-  background: var(--color-bg);
+  /* Transparent so the animated background canvas shows through. */
+  background: transparent;
 }
 
 /* All content blocks share one centred column: 1280px wide with 64px of inner
@@ -884,29 +885,18 @@ body.page-home {
   overflow: hidden;
 }
 
-/* The pastel wash moves from the hero onto the whole screen so it sits behind
-   both columns. */
-.framer-page-home::before {
-  content: '';
-  position: absolute;
+/* The animated background sits behind everything and fills the viewport. */
+#vanta-bg {
+  position: fixed;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(
-    110% 110% at 90% -14%,
-    rgba(196, 181, 253, 0.95) 0%,
-    rgba(186, 200, 255, 0.82) 20%,
-    rgba(186, 214, 255, 0.52) 36%,
-    rgba(203, 226, 255, 0.24) 52%,
-    rgba(224, 238, 255, 0.08) 66%,
-    rgba(252, 252, 252, 0) 80%
-  );
-  animation: hero-breathe 14s ease-in-out infinite;
+  pointer-events: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .framer-page-home::before {
-    animation: none;
-  }
+#vanta-bg canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .home-stage {

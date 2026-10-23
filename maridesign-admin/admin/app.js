@@ -1046,6 +1046,8 @@ function renderOtherEditor() {
 }
 
 function otherCardEditor(item, index) {
+  const caseLink = typeof item.link === 'string' && item.link.indexOf('/case/') === 0;
+  const caseSlug = caseLink ? item.link.slice('/case/'.length) : '';
   return `<div class="card">
     <div class="row-between" style="margin-bottom:14px">
       <div>
@@ -1091,6 +1093,13 @@ function otherCardEditor(item, index) {
       <input class="input" style="margin-top:8px" data-path="items.${index}.link" value="${escapeHtml(
         item.link || ''
       )}" placeholder="Или своя ссылка, например https://...">
+      ${
+        caseLink
+          ? `<button class="btn btn-sm" style="margin-top:10px" data-open-case="${escapeHtml(
+              caseSlug
+            )}">Открыть кейс в редакторе</button>`
+          : ''
+      }
     </div>
   </div>`;
 }
@@ -1118,6 +1127,16 @@ function bindOtherEvents() {
       renderOtherList();
       renderOtherEditor();
       status(select.value ? 'Ссылка на кейс задана' : 'Ссылка убрана');
+    })
+  );
+
+  // Jump into the linked case's editor.
+  main.querySelectorAll('[data-open-case]').forEach((btn) =>
+    btn.addEventListener('click', async () => {
+      const found = (state.cases || []).find((c) => c.slug === btn.dataset.openCase);
+      if (!found) return status('Кейс не найден', true);
+      switchTab('cases');
+      await openCase(found.id);
     })
   );
 

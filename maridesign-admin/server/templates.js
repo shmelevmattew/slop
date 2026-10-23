@@ -248,10 +248,11 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=25">
+<link rel="stylesheet" href="/static/site.css?v=26">
 ${metricaHtml(site)}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
+<div id="vanta-bg" aria-hidden="true"></div>
 ${draft ? `<div class="draft-banner">${escapeHtml(t(locale, 'draftNotice'))} ${adminLink ? `<a href="${escapeHtml(adminLink)}">${escapeHtml(t(locale, 'viewDraft'))}</a>` : ''}</div>` : ''}
 ${headerHtml({ site, locale, path, activeId, mode: headerMode, backHref, backLabel, sections: headerSections })}
 <main>
@@ -261,6 +262,9 @@ ${body}
 <script src="/static/media.js" defer></script>
 <script src="/static/home.js" defer></script>
 <script src="/static/avatar.js" defer></script>
+<script src="/static/vendor/three.r134.min.js" defer></script>
+<script src="/static/vendor/vanta.birds.min.js" defer></script>
+<script src="/static/background.js" defer></script>
 </body>
 </html>`;
 }
