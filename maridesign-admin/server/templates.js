@@ -248,7 +248,7 @@ export function layout({
 <link rel="alternate" hreflang="ru" href="${escapeHtml(url(path, 'ru'))}">
 <link rel="alternate" hreflang="en" href="${escapeHtml(url(path, 'en'))}">
 <link rel="icon" href="/static/favicon.jpg">
-<link rel="stylesheet" href="/static/site.css?v=24">
+<link rel="stylesheet" href="/static/site.css?v=25">
 ${metricaHtml(site)}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
@@ -562,6 +562,83 @@ export function renderGallery({ site, page, locale }) {
   });
 }
 
+// ---------- resume helpers ----------
+// Month names used to read a "March 2024 — September 2026" style period, so the
+// total years of experience can be worked out from the entries themselves.
+const MONTH_STEMS = [
+  ['январ', 'january'],
+  ['феврал', 'february'],
+  ['март', 'march'],
+  ['апрел', 'april'],
+  ['май', 'may'],
+  ['июн', 'june'],
+  ['июл', 'july'],
+  ['август', 'august'],
+  ['сентябр', 'september'],
+  ['октябр', 'october'],
+  ['ноябр', 'november'],
+  ['декабр', 'december'],
+];
+
+function monthIndex(word) {
+  const w = String(word || '').toLowerCase();
+  for (let i = 0; i < MONTH_STEMS.length; i++) {
+    if (MONTH_STEMS[i].some((stem) => w.startsWith(stem) || stem.startsWith(w))) return i;
+  }
+  return 0;
+}
+
+// Every "<month> <year>" (or bare year) in a period string, as an absolute month.
+function momentsIn(text) {
+  const out = [];
+  const re = /([A-Za-zА-Яа-яЁё]+)\s+(\d{4})|(\d{4})/g;
+  let m;
+  while ((m = re.exec(String(text || ''))) !== null) {
+    if (m[3]) out.push(Number(m[3]) * 12);
+    else out.push(Number(m[2]) * 12 + monthIndex(m[1]));
+  }
+  return out;
+}
+
+// Total months covered by the experience entries, merging overlapping jobs so
+// concurrent work is not counted twice.
+function experienceMonths(experience, pickLocal) {
+  const spans = [];
+  for (const job of experience) {
+    const points = momentsIn(pickLocal(job.period));
+    if (!points.length) continue;
+    spans.push([Math.min(...points), Math.max(...points)]);
+  }
+  if (!spans.length) return 0;
+  spans.sort((a, b) => a[0] - b[0]);
+  let total = 0;
+  let [s, e] = spans[0];
+  for (let i = 1; i < spans.length; i++) {
+    if (spans[i][0] <= e + 1) e = Math.max(e, spans[i][1]);
+    else {
+      total += e - s;
+      s = spans[i][0];
+      e = spans[i][1];
+    }
+  }
+  return total + (e - s);
+}
+
+function yearsLabel(months, locale) {
+  if (!months) return '';
+  const years = Math.max(Math.floor(months / 12), 1);
+  const rest = months % 12;
+  if (locale === 'ru') {
+    const mod10 = years % 10;
+    const mod100 = years % 100;
+    let word = 'лет';
+    if (mod10 === 1 && mod100 !== 11) word = 'год';
+    else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) word = 'года';
+    return rest > 0 ? `${years}+ ${word}` : `${years} ${word}`;
+  }
+  return rest > 0 ? `${years}+ years` : `${years} years`;
+}
+
 // Resume page: same hero and footer as the home page, with the primary button
 // swapped for a PDF download and a structured body underneath.
 // The PDF is uploaded separately, so the button is rendered as a plain link when
@@ -575,6 +652,10 @@ export function renderResume({ site, locale, pdfReady = false }) {
 
   const downloadLabel = pickLocal(data.downloadLabel);
   const downloadHref = data.downloadHref || '/static/resume.pdf';
+  const experienceTotal = yearsLabel(
+    experienceMonths(data.experience || [], pickLocal),
+    locale
+  );
 
   const heroButtons = `${
     pdfReady
@@ -607,13 +688,7 @@ export function renderResume({ site, locale, pdfReady = false }) {
       return `<article class="resume-job">
       <header class="resume-job-head">
         <h3 class="resume-job-role">${escapeHtml(role)}</h3>
-        ${
-          company
-            ? `<p class="resume-job-company"><span class="resume-at">@</span>${escapeHtml(
-                company
-              )}</p>`
-            : ''
-        }
+        ${company ? `<p class="resume-job-company">${escapeHtml(company)}</p>` : ''}
         ${period ? `<p class="resume-job-period">${escapeHtml(period)}</p>` : ''}
       </header>
       ${description ? `<p class="resume-job-text">${escapeHtml(description)}</p>` : ''}
@@ -666,7 +741,11 @@ export function renderResume({ site, locale, pdfReady = false }) {
         ? `<section class="resume-block">
       <h2 class="resume-block-title">${escapeHtml(
         heading('experienceHeading', t(locale, 'experience'))
-      )}</h2>
+      )}${
+        experienceTotal
+          ? `<span class="resume-block-note">${escapeHtml(experienceTotal)}</span>`
+          : ''
+      }</h2>
       <div class="resume-jobs">${experience}</div>
     </section>`
         : ''

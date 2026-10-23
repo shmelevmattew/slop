@@ -638,6 +638,18 @@ img {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Total years shown next to the "Experience" heading. */
+.resume-block-note {
+  display: inline-block;
+  margin-left: 12px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--color-muted);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 .resume-jobs {
   display: flex;
   flex-flow: column;
