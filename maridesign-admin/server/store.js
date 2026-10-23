@@ -57,8 +57,8 @@ export function initStorage() {
           port: 4500,
           siteTitle: { ru: 'Мария Шиныбекова', en: 'Maria Shinybekova' },
           siteDescription: {
-            ru: 'Привет, Я Маша. Продуктовый дизайнер. Проектирую B2B, B2E data-heavy платформы.',
-            en: "Hi, I'm Masha. Product designer. I design B2B, B2E data-heavy platforms.",
+            ru: 'Привет, Я Продуктовый дизайнер. Проектирую B2B, B2E data-heavy платформы.',
+            en: "Hi, I'm a product designer. I design B2B, B2E data-heavy platforms.",
           },
           nav: [
             { id: 'projects', href: '/', label: { ru: 'Проекты', en: 'Projects' } },
