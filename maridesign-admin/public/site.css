@@ -351,52 +351,6 @@ img {
   isolation: isolate;
 }
 
-/* Animated pastel wash behind the header and the name block. It is a radial
-   gradient centred in the top-right, to the right of the content column, so the
-   area under the avatar and name stays clean. It fades out towards the bottom
-   and the left, leaving the rest of the page white. The layer spans the full
-   viewport width rather than the 1280px column. */
-.framer-hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  background: radial-gradient(
-    110% 110% at 90% -14%,
-    rgba(196, 181, 253, 0.95) 0%,
-    rgba(186, 200, 255, 0.82) 20%,
-    rgba(186, 214, 255, 0.52) 36%,
-    rgba(203, 226, 255, 0.24) 52%,
-    rgba(224, 238, 255, 0.08) 66%,
-    rgba(252, 252, 252, 0) 80%
-  );
-  animation: hero-breathe 14s ease-in-out infinite;
-}
-
-/* Slow pulse: the wash swells and settles, drifting slightly between the blue
-   and the violet end without ever moving the layout. */
-@keyframes hero-breathe {
-  0%,
-  100% {
-    opacity: 0.85;
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.06) translate3d(-1.5%, 1%, 0);
-  }
-}
-
-/* Respect a reduced-motion preference: keep the colour, drop the movement. */
-@media (prefers-reduced-motion: reduce) {
-  .framer-hero::before {
-    animation: none;
-  }
-}
-
 .hero-inner {
   padding: 0 64px;
   display: flex;
@@ -912,10 +866,6 @@ body.page-home {
 .framer-page-home .framer-hero {
   padding: 0;
   overflow: visible;
-}
-
-.framer-page-home .framer-hero::before {
-  display: none;
 }
 
 .framer-page-home .hero-inner,
