@@ -240,6 +240,7 @@ export function newGalleryItem(title = 'Новый раздел') {
     title: { ru: title, en: '' },
     body: { ru: '', en: '' },
     image: null,
+    link: '',
   };
 }
 
@@ -274,6 +275,7 @@ export function normalizeGalleryPage(raw = {}) {
     title: localize(item?.title),
     body: localize(item?.body),
     image: typeof item?.image === 'string' && item.image ? item.image : null,
+    link: typeof item?.link === 'string' ? item.link : '',
   }));
 
   return page;

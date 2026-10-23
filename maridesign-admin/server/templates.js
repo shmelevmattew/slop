@@ -522,14 +522,23 @@ export function renderGallery({ site, page, locale }) {
             locale === 'ru' ? 'Нет картинки' : 'No image'
           )}</div>`;
 
-      return `<figure class="framer-card">
+      // A card with a link becomes a real link (the same materials live on the
+      // target page); without one it stays a plain figure.
+      const link = typeof item.link === 'string' ? item.link.trim() : '';
+      const external = /^https?:\/\//i.test(link);
+      const tag = link ? 'a' : 'figure';
+      const attrs = link
+        ? ` href="${escapeHtml(link)}"${external ? ' target="_blank" rel="noopener"' : ''}`
+        : '';
+
+      return `<${tag} class="framer-card"${attrs}>
       <div class="card-shell">${media}</div>
       <div class="card-caption"><div class="card-pill"><p class="card-pill-text">${escapeHtml(
         itemTitle
       )}</p>${
         body ? `<p class="card-pill-sub">${escapeHtml(body)}</p>` : ''
       }</div></div>
-    </figure>`;
+    </${tag}>`;
     })
     .filter(Boolean)
     .join('\n');

@@ -27,6 +27,7 @@ const state = {
   cases: [],
   current: null,
   page: null,
+  otherId: null,
   lang: 'ru',
   schema: { sectionTypes: [] },
   collapsed: new Set(),
@@ -910,12 +911,15 @@ function openSectionPicker() {
 }
 
 // ---------- gallery page editor ("Разное") ----------
-// A flat list of image cards. Editing reuses the same data-path helpers as the
-// case editor, but the root object is `state.page` instead of `state.current`,
-// so the shared setters take the root as an argument below.
+// Two panes like the case editor: the cards sit in the sidebar and the one
+// selected there is edited in the main pane. `state.otherId` holds the selected
+// card; writes go to `state.page`.
 
 async function loadOtherPage() {
   state.page = await api('/pages/other');
+  const items = state.page?.items || [];
+  state.otherId = items[0]?.id || null;
+  renderOtherList();
   renderOtherEditor();
 }
 
@@ -932,6 +936,57 @@ async function saveOtherPage() {
   }
 }
 
+function renderOtherList() {
+  const list = el('other-list');
+  const items = state.page?.items || [];
+  if (!items.length) {
+    list.innerHTML = '<p style="color:var(--muted);font-size:13px">Пока нет карточек</p>';
+    return;
+  }
+  list.innerHTML = items
+    .map((item, index) => {
+      const active = state.otherId === item.id ? ' active' : '';
+      const image = item.image || '';
+      return `<div class="case-item${active}" data-other-id="${item.id}" draggable="true">
+      <span class="case-item-handle" title="Перетащите, чтобы изменить порядок">⠿</span>
+      <div class="case-item-thumb">${
+        image ? `<img src="${escapeHtml(image)}" alt="">` : ''
+      }</div>
+      <div class="case-item-meta">
+        <div class="case-item-title">${escapeHtml(item.title?.ru || '(без названия)')}</div>
+        <div class="case-item-sub">${item.link ? 'ведёт в кейс' : 'без ссылки'}</div>
+      </div>
+      <div class="case-item-actions">
+        <button class="icon-btn" data-other-up="${item.id}" ${
+        index === 0 ? 'disabled' : ''
+      } title="Выше">↑</button>
+        <button class="icon-btn" data-other-down="${item.id}" ${
+        index === items.length - 1 ? 'disabled' : ''
+      } title="Ниже">↓</button>
+      </div>
+    </div>`;
+    })
+    .join('');
+
+  list.querySelectorAll('[data-other-id]').forEach((node) => {
+    node.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      state.otherId = node.dataset.otherId;
+      renderOtherList();
+      renderOtherEditor();
+    });
+  });
+
+  list.querySelectorAll('[data-other-up]').forEach((btn) =>
+    btn.addEventListener('click', () => moveOtherItem(btn.dataset.otherUp, -1))
+  );
+  list.querySelectorAll('[data-other-down]').forEach((btn) =>
+    btn.addEventListener('click', () => moveOtherItem(btn.dataset.otherDown, 1))
+  );
+
+  bindOtherDrag();
+}
+
 function renderOtherEditor() {
   const main = el('main-other');
   const page = state.page;
@@ -941,6 +996,11 @@ function renderOtherEditor() {
   }
 
   const items = page.items || [];
+  let index = items.findIndex((i) => i.id === state.otherId);
+  if (index === -1 && items.length) {
+    index = 0;
+    state.otherId = items[0].id;
+  }
 
   main.innerHTML = `
     <div class="card">
@@ -948,7 +1008,7 @@ function renderOtherEditor() {
         <div>
           <h2 class="card-title">Страница «Разное»</h2>
           <p class="card-hint" style="margin:0">
-            Картинки с заголовками. Шапка с фото, именем и кнопками и футер берутся с главной автоматически.
+            Шапка с фото, именем, контактами и кнопкой берётся с главной автоматически.
           </p>
         </div>
         <div class="row">
@@ -975,108 +1035,68 @@ function renderOtherEditor() {
       })}
     </div>
 
-    <div class="card">
-      <div class="row-between" style="margin-bottom:14px">
-        <div>
-          <h2 class="card-title">Карточки</h2>
-          <p class="card-hint" style="margin:0">Порядок карточек — это порядок на странице.</p>
-        </div>
-        <button class="btn btn-primary btn-sm" id="btn-other-add">Добавить карточку</button>
-      </div>
-      ${
-        items.length
-          ? items.map((item, i) => renderOtherItem(item, i, items.length)).join('')
-          : '<div class="empty">Карточек пока нет. Добавьте первую.</div>'
-      }
-    </div>
+    ${
+      index >= 0
+        ? otherCardEditor(items[index], index)
+        : '<div class="card"><div class="empty">Выберите карточку слева или добавьте новую.</div></div>'
+    }
   `;
 
   bindOtherEvents();
 }
 
-function renderOtherItem(item, index, total) {
-  const collapsed = state.collapsed.has(item.id);
-  return `<div class="section-editor" data-other-item="${item.id}">
-    <div class="section-head" draggable="true" data-other-drag="${item.id}">
-      <span class="section-handle">⠿</span>
-      <span class="section-type-badge">Карточка ${index + 1}</span>
-      <span class="section-heading-text">${escapeHtml(
-        item.title?.[state.lang] || item.title?.ru || '(без названия)'
-      )}</span>
-      <div class="section-head-actions">
-        <button class="icon-btn" data-other-collapse="${item.id}" title="Свернуть/развернуть">${
-          collapsed ? '▸' : '▾'
-        }</button>
-        <button class="icon-btn" data-other-up="${item.id}" ${
-          index === 0 ? 'disabled' : ''
-        } title="Выше">↑</button>
-        <button class="icon-btn" data-other-down="${item.id}" ${
-          index === total - 1 ? 'disabled' : ''
-        } title="Ниже">↓</button>
-        <button class="icon-btn" data-other-del="${item.id}" title="Удалить">×</button>
+function otherCardEditor(item, index) {
+  return `<div class="card">
+    <div class="row-between" style="margin-bottom:14px">
+      <div>
+        <h2 class="card-title">Карточка ${index + 1}</h2>
+        <p class="card-hint" style="margin:0">Порядок карточек — это порядок на странице.</p>
       </div>
+      <button class="btn btn-danger btn-sm" data-other-del="${item.id}">Удалить карточку</button>
     </div>
-    <div class="section-body${collapsed ? ' collapsed' : ''}">
-      ${imagePicker({
-        label: 'Картинка',
-        value: { [state.lang]: item.image, ru: item.image, en: null },
-        path: `items.${index}.image`,
-        hint: 'Лучше 4:3, например 1600×1200',
-      })}
-      ${localizedInput({
-        label: 'Заголовок',
-        value: item.title,
-        path: `items.${index}.title`,
-        placeholder: 'Например: Эксперименты с типографикой',
-      })}
-      ${localizedInput({
-        label: 'Подпись под картинкой',
-        value: item.body,
-        path: `items.${index}.body`,
-        multiline: true,
-        rows: 2,
-        placeholder: 'Необязательно',
-      })}
+    ${langTabs()}
+    ${imagePicker({
+      label: 'Картинка',
+      value: { [state.lang]: item.image, ru: item.image, en: null },
+      path: `items.${index}.image`,
+      hint: 'Лучше 4:3, например 1600×1200',
+    })}
+    ${localizedInput({
+      label: 'Заголовок',
+      value: item.title,
+      path: `items.${index}.title`,
+      placeholder: 'Например: Эксперименты с типографикой',
+    })}
+    ${localizedInput({
+      label: 'Подпись под картинкой',
+      value: item.body,
+      path: `items.${index}.body`,
+      multiline: true,
+      rows: 2,
+      placeholder: 'Необязательно',
+    })}
+    <div class="field">
+      <label>Куда ведёт карточка (по клику на сайте)</label>
+      <select class="select" data-other-case="${item.id}">
+        <option value="">— никуда —</option>
+        ${(state.cases || [])
+          .map(
+            (c) =>
+              `<option value="/case/${escapeHtml(c.slug)}" ${
+                item.link === `/case/${c.slug}` ? 'selected' : ''
+              }>Кейс: ${escapeHtml(c.title.ru || c.slug)}</option>`
+          )
+          .join('')}
+      </select>
+      <input class="input" style="margin-top:8px" data-path="items.${index}.link" value="${escapeHtml(
+        item.link || ''
+      )}" placeholder="Или своя ссылка, например https://...">
     </div>
   </div>`;
 }
 
 function bindOtherEvents() {
   const main = el('main-other');
-
-  main.querySelectorAll('[data-other-item] .section-head').forEach((head) => {
-    head.addEventListener('click', (e) => {
-      if (e.target.closest('button')) return;
-      const id = head.dataset.otherDrag;
-      if (state.collapsed.has(id)) state.collapsed.delete(id);
-      else state.collapsed.add(id);
-      renderOtherEditor();
-    });
-  });
-
-  main.querySelectorAll('[data-other-collapse]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.otherCollapse;
-      if (state.collapsed.has(id)) state.collapsed.delete(id);
-      else state.collapsed.add(id);
-      renderOtherEditor();
-    })
-  );
-
-  main.querySelectorAll('[data-other-up]').forEach((btn) =>
-    btn.addEventListener('click', () => moveOtherItem(btn.dataset.otherUp, -1))
-  );
-  main.querySelectorAll('[data-other-down]').forEach((btn) =>
-    btn.addEventListener('click', () => moveOtherItem(btn.dataset.otherDown, 1))
-  );
-
-  main.querySelectorAll('[data-other-del]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      if (!confirm('Удалить карточку?')) return;
-      state.page.items = state.page.items.filter((i) => i.id !== btn.dataset.otherDel);
-      renderOtherEditor();
-    })
-  );
 
   // Shared text inputs: route writes to state.page for the gallery editor.
   main.querySelectorAll('[data-path]').forEach((input) => {
@@ -1087,6 +1107,33 @@ function bindOtherEvents() {
       state.dirty = true;
     });
   });
+
+  // The "leads to" select and the free-text field both write items.<n>.link.
+  main.querySelectorAll('[data-other-case]').forEach((select) =>
+    select.addEventListener('change', () => {
+      const item = state.page.items.find((i) => i.id === select.dataset.otherCase);
+      if (!item) return;
+      item.link = select.value || '';
+      state.dirty = true;
+      renderOtherList();
+      renderOtherEditor();
+      status(select.value ? 'Ссылка на кейс задана' : 'Ссылка убрана');
+    })
+  );
+
+  main.querySelectorAll('[data-other-del]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      if (!confirm('Удалить карточку?')) return;
+      state.page.items = state.page.items.filter((i) => i.id !== btn.dataset.otherDel);
+      if (state.otherId === btn.dataset.otherDel) {
+        state.otherId = state.page.items[0]?.id || null;
+      }
+      state.dirty = true;
+      renderOtherList();
+      renderOtherEditor();
+      status('Карточка удалена');
+    })
+  );
 
   main.querySelectorAll('[data-pick]').forEach((btn) =>
     btn.addEventListener('click', () =>
@@ -1121,25 +1168,16 @@ function bindOtherEvents() {
     );
   });
 
-  el('btn-other-add').addEventListener('click', async () => {
-    const item = await api('/pages/preview', { method: 'POST' });
-    state.page.items.push(item);
-    state.collapsed.delete(item.id);
-    renderOtherEditor();
-    status('Карточка добавлена');
-  });
-
   el('btn-other-save').addEventListener('click', () => saveOtherPage());
   el('btn-other-view').addEventListener('click', () =>
     window.open(`/other?lang=${state.lang}`, '_blank')
   );
-
-  bindOtherDragAndDrop();
 }
 
 function setOtherImage(path, url) {
   setByPath(state.page, path, url || null);
   state.dirty = true;
+  renderOtherList();
   renderOtherEditor();
   status(url ? 'Картинка загружена' : 'Картинка убрана');
 }
@@ -1150,22 +1188,27 @@ function moveOtherItem(id, delta) {
   const target = index + delta;
   if (index < 0 || target < 0 || target >= items.length) return;
   [items[index], items[target]] = [items[target], items[index]];
+  state.dirty = true;
+  renderOtherList();
   renderOtherEditor();
 }
 
-function bindOtherDragAndDrop() {
-  const main = el('main-other');
+function bindOtherDrag() {
+  const list = el('other-list');
   let draggedId = null;
 
-  main.querySelectorAll('[data-other-drag]').forEach((handle) => {
-    handle.addEventListener('dragstart', (e) => {
-      draggedId = handle.dataset.otherDrag;
+  list.querySelectorAll('[data-other-id]').forEach((node) => {
+    node.addEventListener('dragstart', (e) => {
+      draggedId = node.dataset.otherId;
+      node.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
     });
-  });
-
-  main.querySelectorAll('[data-other-item]').forEach((node) => {
+    node.addEventListener('dragend', () => {
+      node.classList.remove('dragging');
+      draggedId = null;
+    });
     node.addEventListener('dragover', (e) => {
+      if (!draggedId || draggedId === node.dataset.otherId) return;
       e.preventDefault();
       node.classList.add('drag-over');
     });
@@ -1173,7 +1216,7 @@ function bindOtherDragAndDrop() {
     node.addEventListener('drop', (e) => {
       e.preventDefault();
       node.classList.remove('drag-over');
-      const targetId = node.dataset.otherItem;
+      const targetId = node.dataset.otherId;
       if (!draggedId || draggedId === targetId) return;
       const items = state.page.items;
       const from = items.findIndex((i) => i.id === draggedId);
@@ -1182,6 +1225,8 @@ function bindOtherDragAndDrop() {
       const [moved] = items.splice(from, 1);
       items.splice(to, 0, moved);
       draggedId = null;
+      state.dirty = true;
+      renderOtherList();
       renderOtherEditor();
     });
   });
@@ -1216,6 +1261,20 @@ el('btn-view-case').addEventListener('click', () => {
   window.open(`/case/${state.current.slug}?lang=${state.lang}&draft=${state.current.id}`, '_blank');
 });
 el('btn-view-site').addEventListener('click', () => window.open(`/?lang=${state.lang}`, '_blank'));
+el('btn-other-add').addEventListener('click', async () => {
+  try {
+    if (!state.page) await loadOtherPage();
+    const item = await api('/pages/preview', { method: 'POST' });
+    state.page.items.push(item);
+    state.otherId = item.id;
+    state.dirty = true;
+    renderOtherList();
+    renderOtherEditor();
+    status('Карточка добавлена');
+  } catch (error) {
+    status(error.message, true);
+  }
+});
 
 window.addEventListener('beforeunload', (e) => {
   if (state.dirty) {

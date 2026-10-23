@@ -105,10 +105,6 @@ select {
   display: none !important;
 }
 
-#layout-other {
-  grid-template-columns: 1fr;
-}
-
 .topbar-actions {
   display: flex;
   gap: 8px;
@@ -209,6 +205,19 @@ select {
   color: var(--muted);
   font-weight: 600;
   margin: 0 0 12px;
+}
+
+/* Title plus the "add" button at the top of a sidebar. */
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sidebar-head .sidebar-title {
+  margin: 0;
 }
 
 .case-item {
